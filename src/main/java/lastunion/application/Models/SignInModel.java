@@ -1,4 +1,4 @@
-package lastunion.application.Models;
+package lastunion.application.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,13 +9,16 @@ public class SignInModel {
     private final String userPassword;
 
     @JsonCreator
-    public SignInModel(@JsonProperty("userName") String name, @JsonProperty("userPassword") String password){
+    public SignInModel(@JsonProperty("userName") String name, @JsonProperty("userPassword") String password) {
         this.userName = name;
         this.userPassword = password;
     }
 
-    public String getUserName(){
+    public String getUserName() {
         return userName;
     }
-    public String getUserPassword(){ return userPassword;  }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
 }

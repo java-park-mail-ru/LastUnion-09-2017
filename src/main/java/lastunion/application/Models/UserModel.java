@@ -1,4 +1,4 @@
-package lastunion.application.Models;
+package lastunion.application.models;
 
 public final class UserModel {
     private Integer userId;
@@ -7,10 +7,11 @@ public final class UserModel {
     private String userPasswordHash;
     private Integer userHighScore;
 
-    public UserModel(){}
+    public UserModel() {
+    }
 
     public UserModel(Integer userId, String userName, String userEmail,
-                     String userPasswordHash, Integer userHighScore){
+                     String userPasswordHash, Integer userHighScore) {
         this.userId = userId;
         this.userName = userName;
         this.userEmail = userEmail;
@@ -18,7 +19,7 @@ public final class UserModel {
         this.userHighScore = userHighScore;
     }
 
-    public UserModel(UserModel other){
+    public UserModel(UserModel other) {
         this.userId = other.userId;
         this.userName = other.userName;
         this.userEmail = other.userEmail;
@@ -36,19 +37,23 @@ public final class UserModel {
     Getters and Setters
      */
 
-    public Integer getUserId(){
+    public Integer getUserId() {
         return userId;
     }
-    public String getUserName(){
+
+    public String getUserName() {
         return userName;
     }
-    public String getUserEmail(){
+
+    public String getUserEmail() {
         return userEmail;
     }
-    public String getUserPasswordHash(){
+
+    public String getUserPasswordHash() {
         return userPasswordHash;
     }
-    public Integer getUserHighScore(){
+
+    public Integer getUserHighScore() {
         return userHighScore;
     }
 
@@ -56,16 +61,20 @@ public final class UserModel {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    public void setUserName(String userName){
+
+    public void setUserName(String userName) {
         this.userName = userName;
     }
-    public void setUserEmail(String userEmail){
+
+    public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-    public void setUserPasswordHash(String userPasswordHash){
+
+    public void setUserPasswordHash(String userPasswordHash) {
         this.userPasswordHash = userPasswordHash;
     }
-    public void setUserHighScore(Integer userHighScore){
+
+    public void setUserHighScore(Integer userHighScore) {
         this.userHighScore = userHighScore;
     }
 }

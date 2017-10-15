@@ -1,6 +1,7 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
-import lastunion.application.Models.UserModel;
+import lastunion.application.models.UserModel;
+
 import javax.validation.constraints.NotNull;
 
 public class UserView implements AbstractView {
@@ -9,10 +10,11 @@ public class UserView implements AbstractView {
     private String userEmail;
     private Integer userHighScore;
 
-    public UserView(){}
+    public UserView() {
+    }
 
     @SuppressWarnings("unused")
-    public UserView(@NotNull UserModel userModel){
+    public UserView(@NotNull UserModel userModel) {
         this.userId = userModel.getUserId();
         this.userLogin = userModel.getUserName();
         this.userEmail = userModel.getUserEmail();
@@ -20,45 +22,50 @@ public class UserView implements AbstractView {
     }
 
 
-
     @SuppressWarnings("unused")
-    public Integer getUserId(){
+    public Integer getUserId() {
         return userId;
     }
+
     @SuppressWarnings("unused")
-    public String getUserLogin(){
+    public String getUserLogin() {
         return userLogin;
     }
 
     @SuppressWarnings("unused")
-    public String getUserEmail(){
+    public String getUserEmail() {
         return userEmail;
     }
 
     @SuppressWarnings("unused")
-    public Integer getUserHighScore(){
+    public Integer getUserHighScore() {
         return userHighScore;
     }
 
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    public void setUserLogin(String userLogin){
+
+    public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
     }
-    public void setUserEmail(String userEmail){
+
+    public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-    public void setUserHighScore(Integer userHighScore){
+
+    public void setUserHighScore(Integer userHighScore) {
         this.userHighScore = userHighScore;
     }
 
     @Override
     @SuppressWarnings("OverlyComplexBooleanExpression")
-    public final boolean isFilled(){
+    public final boolean isFilled() {
         return userId != null && userLogin != null && userEmail != null && userHighScore != null;
     }
 
     @Override
-    public final boolean isValid(){  return true;   }
+    public final boolean isValid() {
+        return true;
+    }
 }

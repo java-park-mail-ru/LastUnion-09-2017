@@ -1,4 +1,4 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,26 +14,35 @@ public class SignUpView implements AbstractView {
     @SuppressWarnings("unused")
     @JsonCreator
     SignUpView(@JsonProperty("userName") String userName, @JsonProperty("userPassword") String userPassword,
-               @JsonProperty("userEmail") String userEmail){
+               @JsonProperty("userEmail") String userEmail) {
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
     }
 
 
-    public final String getUserName(){
+    public final String getUserName() {
         return userName;
     }
-    public final String getUserPassword(){ return userPassword; }
-    public final String getUserEmail() {return userEmail; }
+
+    public final String getUserPassword() {
+        return userPassword;
+    }
+
+    public final String getUserEmail() {
+        return userEmail;
+    }
+
     @Override
-    public final  boolean isFilled(){
-        return userEmail != null && userPassword != null && userName !=null;
+    public final boolean isFilled() {
+        return userEmail != null && userPassword != null && userName != null;
     }
 
     @Override
     public final boolean isValid() {
-        if (!isFilled()) return false;
+        if (!isFilled()) {
+            return false;
+        }
         try {
             final InternetAddress emailAddr = new InternetAddress(userEmail);
             emailAddr.validate();
