@@ -42,16 +42,6 @@ public class SignInTest {
         requestBuilder.init("userName", "userPassword");
     }
 
-//    private static String getJsonRequest(String uName, String uPassword, String uEmail, boolean emailNeeds ){
-//        final JSONObject jso = new JSONObject();
-//        jso.put("userName", uName);
-//        jso.put("userPassword", uPassword);
-//        if (emailNeeds)
-//            jso.put("userEmail", uEmail);
-//        return jso.toString();
-//    }
-
-
     public void createUser() throws Exception {
         this.mock.perform(
                 post("/api/user/signup")

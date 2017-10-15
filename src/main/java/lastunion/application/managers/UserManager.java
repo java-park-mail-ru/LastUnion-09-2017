@@ -1,7 +1,6 @@
 package lastunion.application.managers;
 
 
-
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
@@ -29,7 +28,8 @@ public class UserManager {
 
     public enum ResponseCode {
         @SuppressWarnings("EnumeratedConstantNamingConvention") OK,
-        LOGIN_IS_BUSY,
+        LOGIN_IS_TAKEN,
+        EMAIL_IS_TAKEN,
         INCORRECT_LOGIN,
         INCORRECT_PASSWORD,
         DATABASE_ERROR
@@ -98,7 +98,11 @@ public class UserManager {
             userDAO.saveUser(newUser);
             LOGGER.info("User registered with name " + newUser.getUserName());
         } catch (DuplicateKeyException dupEx) {
-            return ResponseCode.LOGIN_IS_BUSY;
+            if (userDAO.userExist(newUser.getUserName())) {
+                return ResponseCode.LOGIN_IS_TAKEN;
+            } else {
+                return ResponseCode.EMAIL_IS_TAKEN;
+            }
         } catch (DataAccessException daEx) {
             LOGGER.info(daEx.getMessage());
             return ResponseCode.DATABASE_ERROR;
@@ -115,6 +119,8 @@ public class UserManager {
             final UserModel modifiedUser = new UserModel(user);
             modifiedUser.setUserEmail(newEmail);
             userDAO.modifyUser(user, modifiedUser);
+        } catch (DuplicateKeyException dupEx) {
+            return ResponseCode.EMAIL_IS_TAKEN;
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
@@ -125,15 +131,7 @@ public class UserManager {
     }
 
     public boolean userExists(@Nullable String userName) {
-        if (userName == null) {
-            return false;
-        }
-        try {
-            userDAO.getUserByName(userName);
-            return true;
-        } catch (RuntimeException ex) {
-            return false;
-        }
+        return userName != null && userDAO.userExist(userName);
     }
 
     public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName) {

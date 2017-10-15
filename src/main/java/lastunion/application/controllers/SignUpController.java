@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
+//@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
 @RestController
 public class SignUpController {
     @NotNull
@@ -55,10 +55,15 @@ public class SignUpController {
                     messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
                     HttpStatus.OK);
 
-            case LOGIN_IS_BUSY:
+            case LOGIN_IS_TAKEN:
                 return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.conflict_login", null, Locale.ENGLISH)),
                     HttpStatus.CONFLICT);
+
+            case EMAIL_IS_TAKEN:
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.conflict_email", null, Locale.ENGLISH)),
+                        HttpStatus.CONFLICT);
 
             default:
                 return new ResponseEntity<>(new ResponseCode(false,

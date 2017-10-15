@@ -36,7 +36,7 @@ public class SignUpTest {
 
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void initFaker() {
+    static public void init() {
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
         requestBuilder.init("userName", "userPassword", "userEmail");
@@ -70,7 +70,7 @@ public class SignUpTest {
     }
 
     @Test
-    public void signUpMormal() throws Exception {
+    public void signUpNormal() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -85,7 +85,7 @@ public class SignUpTest {
 
 
     @Test
-    public void signUpConflict() throws Exception {
+    public void signUpConflictUserName() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -97,7 +97,23 @@ public class SignUpTest {
     }
 
     @Test
-    public void signUnNullUserName() throws Exception {
+    public void signUpConflictUserEmail() throws Exception {
+        final String otherUserName = faker.name().username();
+        final String otherUserPassword = faker.internet().password();
+
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(otherUserName, otherUserPassword, userEmail)))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
+    }
+
+
+    @Test
+    public void signUpNullUserName() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
@@ -135,7 +151,7 @@ public class SignUpTest {
 
 
     @Test
-    public void signUnIncorrectDocumentType() throws Exception {
+    public void signUpIncorrectDocumentType() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))

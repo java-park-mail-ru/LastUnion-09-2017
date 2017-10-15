@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.validation.constraints.NotNull;
+
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,11 +46,11 @@ public class ChangeEmailTest {
         requestBuilder.init("newEmail");
     }
 
-    public void createUser() throws Exception {
+    public void createUser(@NotNull String uName, @NotNull String uPassword, @NotNull String uEmail) throws Exception {
         this.mock.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
-                        .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
+                        .content(TestRequestBuilder.getJsonRequestForSignUp(uName, uPassword, uEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
@@ -64,7 +66,7 @@ public class ChangeEmailTest {
         pathUrl = "/api/user/change_email";
 
         try {
-            createUser();
+            createUser(userName, userPassword, userEmail);
         } catch (Exception ex) {
             throw new RuntimeException();
         }
@@ -94,6 +96,24 @@ public class ChangeEmailTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Form not valid! en")));
+    }
+
+    @Test
+    public void changeEmailThatTaken() throws Exception {
+        final String otherUserName = faker.name().username();
+        final String otherUserPassword = faker.internet().password();
+        final String otherUseEmail = faker.internet().emailAddress();
+        createUser(otherUserName,otherUserPassword,otherUseEmail);
+
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userEmail))
+                        .sessionAttr("userName", otherUserName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
     }
 
 

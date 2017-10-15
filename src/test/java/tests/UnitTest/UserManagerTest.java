@@ -16,12 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertSame;
 
-@SuppressWarnings({"DefaultFileTemplate", "RedundantSuppression"})
+@SuppressWarnings( {"DefaultFileTemplate", "RedundantSuppression"})
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
@@ -39,8 +40,8 @@ public class UserManagerTest {
         faker = new Faker(new Locale("en-US"));
     }
 
-    public void signUpUserOk() {
-        final SignUpModel signUpModel = new SignUpModel(userName, userPassword, userEmail);
+    public void signUpUserOk(@NotNull String uName, @NotNull String uPassword, @NotNull String uEmail){
+        final SignUpModel signUpModel = new SignUpModel(uName, uPassword, uEmail);
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
@@ -50,18 +51,19 @@ public class UserManagerTest {
         userEmail = faker.internet().emailAddress();
         userName = faker.name().username();
         userPassword = faker.internet().password();
-        signUpUserOk();
+        signUpUserOk(userName, userPassword, userEmail);
     }
 
     @Test
     public void checkPasswordByUserNameOk() {
-        boolean result = userManager.checkPasswordByUserName(userPassword, userName);
+        final boolean result = userManager.checkPasswordByUserName(userPassword, userName);
         assertSame(result, true);
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void checkPasswordByUserNameWithIncorrectPassword() {
-        boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
+        final boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
         assertSame(result, false);
     }
 
@@ -95,17 +97,23 @@ public class UserManagerTest {
     }
 
     @Test
-    public void signUpUserConflict() {
+    public void signUpUserConflictUserName() {
         final SignUpModel signUpModel = new SignUpModel(userName, userPassword, userEmail);
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpModel);
-        assertSame(responseCode, UserManager.ResponseCode.LOGIN_IS_BUSY);
+        assertSame(responseCode, UserManager.ResponseCode.LOGIN_IS_TAKEN);
+    }
+
+    @Test
+    public void signUpUserConflictUserEmail() {
+        final SignUpModel signUpModel = new SignUpModel(faker.name().username(), userPassword, userEmail);
+        final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpModel);
+        assertSame(responseCode, UserManager.ResponseCode.EMAIL_IS_TAKEN);
     }
 
     @Test
     public void checkUserThatExist() {
         final boolean result = userManager.userExists(userName);
         assertSame(result, true);
-
     }
 
     @Test
@@ -120,8 +128,6 @@ public class UserManagerTest {
         assertSame(result, false);
     }
 
-    //change email change password
-
     @Test
     public void changeUserEmailOk() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().emailAddress(),
@@ -130,9 +136,22 @@ public class UserManagerTest {
     }
 
     @Test
+    public void changeUserEmailWithExistingEmail() {
+        final String otherUserName = faker.name().username();
+        final String otherUserPassword = faker.internet().password();
+        final String otherUseEmail = faker.internet().emailAddress();
+        signUpUserOk(otherUserName,otherUserPassword,otherUseEmail);
+
+        final UserManager.ResponseCode responseCode = userManager.changeUserEmail(userEmail,
+                otherUserName);
+        assertSame(responseCode, UserManager.ResponseCode.EMAIL_IS_TAKEN);
+    }
+
+    @SuppressWarnings("InstanceMethodNamingConvention")
+    @Test
     public void changeUserEmailWithNotExistingUser() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().emailAddress(),
-                userName);
+                faker.name().username());
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
@@ -143,6 +162,7 @@ public class UserManagerTest {
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void changeUserPasswordWithNotExistingUser() {
         final UserManager.ResponseCode responseCode = userManager.changeUserEmail(faker.internet().password(),
@@ -152,7 +172,7 @@ public class UserManagerTest {
 
     @Test
     public void getUserByNameOk() {
-        UserModel userModel = new UserModel();
+        final UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(userName, userModel);
         assertSame(responseCode, UserManager.ResponseCode.OK);
         assertTrue(userModel.getUserName().equals(userName));
@@ -161,7 +181,7 @@ public class UserManagerTest {
 
     @Test
     public void getUserByNameError() {
-        UserModel userModel = new UserModel();
+        final UserModel userModel = new UserModel();
         final UserManager.ResponseCode responseCode = userManager.getUserByName(faker.internet().emailAddress(),
                 userModel);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);

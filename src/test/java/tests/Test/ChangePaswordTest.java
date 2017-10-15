@@ -85,6 +85,7 @@ public class ChangePaswordTest {
                 .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void changePasswordIncorrectOldPassword() throws Exception {
         this.mock.perform(
@@ -163,6 +164,7 @@ public class ChangePaswordTest {
                 .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
     }
 
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void changePasswordIncorrectDocumentType() throws Exception{
         this.mock.perform(

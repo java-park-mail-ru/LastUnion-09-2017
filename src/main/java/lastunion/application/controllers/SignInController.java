@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
+//@CrossOrigin(origins = "https://front-lastunion.herokuapp.com/")
 @RestController
 public class SignInController {
     @NotNull
@@ -28,21 +28,21 @@ public class SignInController {
     }
 
     @RequestMapping(path = "/api/user/signin", method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ResponseCode> signIn(@RequestBody SignInView signInView, HttpSession httpSession) {
 
         if (!signInView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
-                HttpStatus.BAD_REQUEST);
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
         }
 
         // Incorrect authenticatiion data
         if (!signInView.isValid()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
-                HttpStatus.BAD_REQUEST);
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
         }
         final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());
 
@@ -53,19 +53,19 @@ public class SignInController {
             case INCORRECT_LOGIN:
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                    HttpStatus.FORBIDDEN);
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        HttpStatus.FORBIDDEN);
 
             case OK:
                 httpSession.setAttribute("userLogin", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
-                    messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                    HttpStatus.OK);
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        HttpStatus.OK);
 
             default:
                 return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
