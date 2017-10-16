@@ -23,7 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Category(tests.IntegrationTest.class)
-public class SignUpTest {
+//
+
+public class ChangePaswordTest_IT {
     @Autowired
     private MockMvc mock;
     private static Faker faker;
@@ -34,19 +36,19 @@ public class SignUpTest {
     private static String userPassword;
 
 
+
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
-    static public void init() {
+    static public void init(){
         faker = new Faker();
         requestBuilder = new TestRequestBuilder();
-        requestBuilder.init("userName", "userPassword", "userEmail");
+        requestBuilder.init("oldPassword", "newPassword");
     }
-
 
     public void createUser() throws Exception {
         this.mock.perform(
                 post("/api/user/signup")
-                        .contentType("application/json")//MediaType.APPLICATION_JSON_VALUE)
+                        .contentType("application/json")
                         .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
@@ -56,68 +58,55 @@ public class SignUpTest {
 
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() {
+    public void setUp(){
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
-        pathUrl = "/api/user/signup";
+        pathUrl = "/api/user/change_password";
 
         try {
             createUser();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new RuntimeException();
         }
     }
 
     @Test
-    public void signUpNormal() throws Exception {
+    public void changePasswordNormal() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(faker.name().username(),
-                                faker.internet().password(),
-                                faker.internet().emailAddress())))
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password()))
+                        .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
     }
 
-
+    @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
-    public void signUpConflictUserName() throws Exception {
+    public void changePasswordIncorrectOldPassword() throws Exception {
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName, userPassword, userEmail)))
+                        .content(requestBuilder.getJsonRequest("aaa", faker.internet().password()))
+                        .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isConflict())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Login already occupied! en")));
-    }
-
-    @Test
-    public void signUpConflictUserEmail() throws Exception {
-        final String otherUserName = faker.name().username();
-        final String otherUserPassword = faker.internet().password();
-
-        this.mock.perform(
-                post(pathUrl)
-                        .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(otherUserName, otherUserPassword, userEmail)))
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
     }
 
 
     @Test
-    public void signUpNullUserName() throws Exception {
+    public void changePasswordNullOldPassword() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(null, userPassword, userEmail)))
+                        .content(requestBuilder.getJsonRequest(null, faker.internet().password()))
+                        .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
@@ -125,33 +114,59 @@ public class SignUpTest {
     }
 
     @Test
-    public void signUpNullUserPassword() throws Exception {
+    public void changePasswordNullNewPassword() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName, null, userEmail)))
+                        .content(requestBuilder.getJsonRequest(userPassword, null))
+                        .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
     }
 
-
     @Test
-    public void signUpNullUserEmail() throws Exception {
+    public void changePasswordNullBothPasswords() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("application/json")
-                        .content(requestBuilder.getJsonRequest(userName, userPassword, null)))
+                        .content(requestBuilder.getJsonRequest(null, null))
+                        .sessionAttr("userName", userName))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
     }
 
+    @Test
+    public void changePasswordNullSession() throws Exception{
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password())))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+    }
 
     @Test
-    public void signUpIncorrectDocumentType() throws Exception {
+    public void changePasswordInvalidSession() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userPassword, faker.internet().password()))
+                        .sessionAttr("userName", faker.name().username()))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+    }
+
+    @SuppressWarnings("InstanceMethodNamingConvention")
+    @Test
+    public void changePasswordIncorrectDocumentType() throws Exception{
         this.mock.perform(
                 post(pathUrl)
                         .contentType("text/html"))

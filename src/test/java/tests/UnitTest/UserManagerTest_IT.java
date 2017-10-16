@@ -9,6 +9,7 @@ import lastunion.application.models.UserModel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,8 +27,8 @@ import static org.junit.Assert.assertSame;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-
-public class UserManagerTest {
+@Category(tests.IntegrationTest.class)
+public class UserManagerTest_IT {
     @Autowired
     private UserManager userManager;
     private static Faker faker;

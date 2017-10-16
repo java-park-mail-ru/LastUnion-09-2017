@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.core.Is.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,27 +23,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Category(tests.IntegrationTest.class)
-//
-
-public class UserDataTest {
+public class SignInTest_IT {
     @Autowired
     private MockMvc mock;
+    private static TestRequestBuilder requestBuilder;
     private static Faker faker;
     private static String pathUrl;
     private static String userName;
     private static String userEmail;
     private static String userPassword;
 
+
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
     static public void init() {
         faker = new Faker();
+        requestBuilder = new TestRequestBuilder();
+        requestBuilder.init("userName", "userPassword");
     }
 
     public void createUser() throws Exception {
         this.mock.perform(
                 post("/api/user/signup")
-                        .contentType("application/json")
+                        .contentType("application/json")//MediaType.APPLICATION_JSON_VALUE)
                         .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
@@ -58,7 +59,7 @@ public class UserDataTest {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
-        pathUrl = "/api/user/data";
+        pathUrl = "/api/user/signin";
 
         try {
             createUser();
@@ -67,11 +68,13 @@ public class UserDataTest {
         }
     }
 
+
     @Test
-    public void getDataOk() throws Exception {
-        mock.perform(
-                get(pathUrl)
-                        .sessionAttr("userName", userName))
+    public void signInNormal() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userName, userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
@@ -79,24 +82,61 @@ public class UserDataTest {
     }
 
     @Test
-    public void invalidSession() throws Exception {
-        mock.perform(
-                get(pathUrl)
-                        .sessionAttr("userName", faker.name().username()))
+    public void signInNullUserName() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(null, userPassword)))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+    }
+
+    @Test
+    public void signInNullUserPassword() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userName, null)))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+    }
+
+
+    @Test
+    public void signInIncorrectUserName() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest("Petya", userPassword)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
                 .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
     }
 
+
     @Test
-    public void nullSession() throws Exception {
-        mock.perform(
-                get(pathUrl))
+    public void signInIncorrectUserPassword() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("application/json")
+                        .content(requestBuilder.getJsonRequest(userName, "no")))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
     }
 
+
+    @Test
+    public void signInIncorrectDocumentType() throws Exception {
+        this.mock.perform(
+                post(pathUrl)
+                        .contentType("text/html"))
+                .andExpect(status().isUnsupportedMediaType());
+    }
 }

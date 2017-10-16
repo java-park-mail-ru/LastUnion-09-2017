@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
   userscore    INTEGER DEFAULT 0
 );
 
-CREATE UNIQUE INDEX users_login_unique_idx
+CREATE UNIQUE INDEX users_username_unique_idx
   ON users (username);
 

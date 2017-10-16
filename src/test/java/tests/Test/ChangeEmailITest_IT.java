@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Category(tests.IntegrationTest.class)
 //
 
-public class ChangeEmailTest {
+public class ChangeEmailITest_IT {
     @Autowired
     private MockMvc mock;
     private static Faker faker;

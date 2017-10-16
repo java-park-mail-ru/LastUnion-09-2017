@@ -1,0 +1,11 @@
+language: java
+jdk: oraclejdk8
+install: true
+
+env: DB=pgsql
+
+before_script: psql -c "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE, useremail VARCHAR(50) UNIQUE, userpassword TEXT, userscore INTEGER DEFAULT 0); CREATE UNIQUE INDEX users_username_unique_idx ON users (username);" -U postgres;
+
+script: mvn -q clean integration-test
+cache:
+  directories: $HOME/.m2
