@@ -13,6 +13,7 @@ paths:
       tags:
       - uesr
       summary: Sign in user into the server
+      description: Sign in user into the server
       operationId: signInUser
       consumes:
       - application/json
@@ -32,7 +33,8 @@ paths:
         400:
           description: Contains null fields
           schema:
-            $ref: "#/defenitions/bad_request"
+            $ref: '#/definitions/badRequestJson'
+            $ref: '#/definitions/badRequestForm'            
         403:
           description: Invalid login or password
           schema: 
@@ -61,36 +63,43 @@ paths:
         400:
           description: Json contains null fields
           schema:
-            $ref: "#/defenitions/bad_request"
+            $ref: "#/definitions/badRequestForm",
+            $ref: "#/definitions/badRequestJson"
         409:
           description: Login or Email already registered
           schema: 
             $ref: '#/definitions/conflict'
-  /api/user/data:
-    get:
-      tags:
-        -user
-      summary: Get information about user
-      operationId: getUserData
-      produces: 
-      - application/json
-      parameters: []
-      responses:
-        200:
-          description: Successfull operation
-        403:
-        404:
-
-
-  /api/user/change_email:
-    post:
-  /api/user/change_password:
-    post:
-  /api/user/delete:
-    delete:
-  /api/user/logout:
-    post:
-        
+  # /api/user/data:
+  #   get:
+  #     tags:
+  #       -user
+  #     summary: Get information about user
+  #     operationId: getUserData
+  #     produces: 
+  #     - application/json
+  #     parameters: []
+  #     responses:
+  #       200:
+  #         description: Successfull operation
+  #       403:
+  #       404:
+  # /api/user/change_email:
+  #   post:
+  #     tags:
+  #     - user
+  # /api/user/change_password:
+  #   post:
+  #     tags:
+  #       - user
+  # /api/user/delete:
+  #   delete:
+  #     tags:
+  #       - user
+  # /api/user/logout:
+  #   post:
+  #     tags:
+  #     - user
+      
 definitions:
   signInUserModel:
     type: object
@@ -136,53 +145,62 @@ definitions:
         format: password
     xml:
       name: changeUserPasswordModel
-  Pet:
+  Ok:
     type: object
-    required:
-    - name
-    - photoUrls
     properties:
-      id:
-        type: integer
-        format: int64
-      category:
-        $ref: '#/definitions/Category'
-      name:
+      result: 
+        type: boolean
+        example: true
+      responseMessage:
         type: string
-        example: doggie
-      photoUrls:
-        type: array
-        xml:
-          name: photoUrl
-          wrapped: true
-        items:
-          type: string
-      tags:
-        type: array
-        xml:
-          name: tag
-          wrapped: true
-        items:
-          $ref: '#/definitions/Tag'
-      status:
+        example: Ok! en
+      data: 
         type: string
-        description: pet status in the store
-        enum:
-        - available
-        - pending
-        - sold
+        example: null
+    xml: 
+      name: Ok
+  badRequestJson:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: false
+      responseMessage:
+        type: string
+        example: Json contains null fields! en
+      data: 
+        type: string
+        example: null
     xml:
-      name: Pet
-  ApiResponse:
+      name: badRequestJson
+  badRequestForm:
     type: object
     properties:
-      code:
-        type: integer
-        format: int32
-      type:
+      result: 
+        type: boolean
+        example: false
+      responseMessage:
         type: string
-      message:
+        example: Form not valid! en
+      data: 
         type: string
+        example: null
+    xml:
+      name: badRequestForm
+  forbidden:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: false
+      responseMessage:
+        type: string
+        example: Invalid authentication data! en
+      data: 
+        type: string
+        example: null
+    xml: 
+      name: forbidden
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
