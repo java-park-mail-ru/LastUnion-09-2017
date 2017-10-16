@@ -49,7 +49,7 @@ public class SignUpTest_IT {
                         .contentType("application/json")//MediaType.APPLICATION_JSON_VALUE)
                         .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
@@ -78,7 +78,7 @@ public class SignUpTest_IT {
                                 faker.internet().password(),
                                 faker.internet().emailAddress())))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }

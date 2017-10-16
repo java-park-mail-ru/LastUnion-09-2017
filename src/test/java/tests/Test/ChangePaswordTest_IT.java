@@ -51,7 +51,7 @@ public class ChangePaswordTest_IT {
                         .contentType("application/json")
                         .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }

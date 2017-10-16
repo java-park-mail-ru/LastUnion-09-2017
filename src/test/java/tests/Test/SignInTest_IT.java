@@ -48,7 +48,7 @@ public class SignInTest_IT {
                         .contentType("application/json")//MediaType.APPLICATION_JSON_VALUE)
                         .content(TestRequestBuilder.getJsonRequestForSignUp(userName, userPassword, userEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }

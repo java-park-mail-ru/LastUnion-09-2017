@@ -52,7 +52,7 @@ public class ChangeEmailITest_IT {
                         .contentType("application/json")
                         .content(TestRequestBuilder.getJsonRequestForSignUp(uName, uPassword, uEmail)))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }

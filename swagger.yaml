@@ -1,0 +1,194 @@
+swagger: '2.0'
+info:
+  description: |
+    This is a server, which proides api for signup, signin user and get information about user.
+    Developers LastUnion team.
+  version: 1.0.0
+  title: LastUnion server
+# schemes:
+# - https
+paths:
+  /api/user/signin:
+    post:
+      tags:
+      - uesr
+      summary: Sign in user into the server
+      operationId: signInUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/signInUserModel'
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+            $ref: '#/definitions/Ok'
+        400:
+          description: Contains null fields
+          schema:
+            $ref: "#/defenitions/bad_request"
+        403:
+          description: Invalid login or password
+          schema: 
+            $ref: '#/definitions/forbidden'
+  /api/user/signup:
+    post:
+      tags:
+      - user
+      summary: Create user 
+      operationId: signUpUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/signUpUserModel'
+      responses:
+        201:
+          description: Successfull signin
+          schema:
+            $ref: '#/definitions/Ok'
+        400:
+          description: Json contains null fields
+          schema:
+            $ref: "#/defenitions/bad_request"
+        409:
+          description: Login or Email already registered
+          schema: 
+            $ref: '#/definitions/conflict'
+  /api/user/data:
+    get:
+      tags:
+        -user
+      summary: Get information about user
+      operationId: getUserData
+      produces: 
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Successfull operation
+        403:
+        404:
+
+
+  /api/user/change_email:
+    post:
+  /api/user/change_password:
+    post:
+  /api/user/delete:
+    delete:
+  /api/user/logout:
+    post:
+        
+definitions:
+  signInUserModel:
+    type: object
+    properties:
+      userName:
+        type: string
+        format: unique
+      userPassword:
+        type: string
+        format: password
+      xml:
+        name: signInUserModel
+  signUpUserModel:
+    type: object
+    properties:
+      userName:
+        type: string
+        format: unique
+      userEmail:
+        type: string
+        format: unique
+      userPassword:
+        type: string
+        format: password
+    xml:
+      name: signUpUserModel
+  changeUserEmailModel:
+    type: object
+    properties:
+      userEmail:
+        type: string
+        format: unique
+    xml:
+      name: changeUserEmailModel
+  changeUserPasswordModel:
+    type: object
+    properties:
+      oldPassword:
+        type: string
+        format: password
+      newPassword:
+        type: string
+        format: password
+    xml:
+      name: changeUserPasswordModel
+  Pet:
+    type: object
+    required:
+    - name
+    - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+      category:
+        $ref: '#/definitions/Category'
+      name:
+        type: string
+        example: doggie
+      photoUrls:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: string
+      tags:
+        type: array
+        xml:
+          name: tag
+          wrapped: true
+        items:
+          $ref: '#/definitions/Tag'
+      status:
+        type: string
+        description: pet status in the store
+        enum:
+        - available
+        - pending
+        - sold
+    xml:
+      name: Pet
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /HustonMmmavr/server_api/1.0.0
+schemes:
+ - https
+ - http
