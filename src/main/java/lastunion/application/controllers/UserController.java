@@ -219,4 +219,20 @@ public class UserController {
 
         }
     }
+
+    @RequestMapping(path = "/api/user/score", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getScoreBoard(HttpSession httpSession) {
+        final String userName = (String) httpSession.getAttribute("userName");
+        if (userName == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
+        }
+        final UserModel userModel = new UserModel();
+        userManager.getUserByName(userName, userModel);
+        return new ResponseEntity<>(new ResponseCode<>(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                userModel.getUserHighScore()), HttpStatus.OK);
+    }
 }

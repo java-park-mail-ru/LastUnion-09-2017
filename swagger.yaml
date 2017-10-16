@@ -7,11 +7,12 @@ info:
   title: LastUnion server
 # schemes:
 # - https
+
 paths:
   /api/user/signin:
     post:
       tags:
-      - uesr
+      - user
       summary: Sign in user into the server
       description: Sign in user into the server
       operationId: signInUser
@@ -31,10 +32,9 @@ paths:
           schema:
             $ref: '#/definitions/Ok'
         400:
-          description: Contains null fields
+          description: Contains invalid fields
           schema:
-            $ref: '#/definitions/badRequestJson'
-            $ref: '#/definitions/badRequestForm'            
+            $ref: '#/definitions/badRequest'
         403:
           description: Invalid login or password
           schema: 
@@ -57,48 +57,142 @@ paths:
           $ref: '#/definitions/signUpUserModel'
       responses:
         201:
-          description: Successfull signin
+          description: Successfull signup
           schema:
-            $ref: '#/definitions/Ok'
+            $ref: '#/definitions/created'
         400:
-          description: Json contains null fields
+          description: Contains invalid fields
           schema:
-            $ref: "#/definitions/badRequestForm",
-            $ref: "#/definitions/badRequestJson"
+            $ref: '#/definitions/badRequest'
         409:
           description: Login or Email already registered
           schema: 
             $ref: '#/definitions/conflict'
-  # /api/user/data:
-  #   get:
-  #     tags:
-  #       -user
-  #     summary: Get information about user
-  #     operationId: getUserData
-  #     produces: 
-  #     - application/json
-  #     parameters: []
-  #     responses:
-  #       200:
-  #         description: Successfull operation
-  #       403:
-  #       404:
-  # /api/user/change_email:
-  #   post:
-  #     tags:
-  #     - user
-  # /api/user/change_password:
-  #   post:
-  #     tags:
-  #       - user
-  # /api/user/delete:
-  #   delete:
-  #     tags:
-  #       - user
-  # /api/user/logout:
-  #   post:
-  #     tags:
-  #     - user
+  /api/user/data:
+    get:
+      tags:
+      - user
+      summary: Get information about user
+      operationId: getUserData
+      produces: 
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+             $ref: '#/definitions/Ok'
+        403:
+          description: Invalid login or password
+          schema: 
+            $ref: '#/definitions/forbidden'
+        404:
+          description: Invalid session
+          schema: 
+            $ref: '#/definitions/notFound'
+  /api/user/change_email:
+    post:
+      tags:
+      - user
+      summary: Changes user email
+      operationId: changeUserEmail
+      consumes:
+      - application/json
+      produces: 
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/changeUserEmailModel'
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+             $ref: '#/definitions/Ok'
+        400:
+          description: Contains invalid fields
+          schema:
+            $ref: '#/definitions/badRequest'
+        404:
+          description: Invalid sesion
+          schema: 
+            $ref: '#/definitions/notFound'
+        409:
+          description: Login or Email already registered
+          schema: 
+            $ref: '#/definitions/conflict'
+            
+  /api/user/change_password:
+    post:
+      tags:
+      - user
+      summary: Changes user password
+      operationId: changeUserPassword
+      consumes:
+      - application/json
+      produces: 
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/changeUserPasswordModel'
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+             $ref: '#/definitions/Ok'
+        400:
+          description: Contains invalid fields
+          schema:
+            $ref: '#/definitions/badRequest'
+        404:
+          description: Invalid session
+          schema: 
+            $ref: '#/definitions/notFound'
+        403:
+          description: Invalid login or password
+          schema: 
+            $ref: '#/definitions/forbidden'
+  /api/user/delete:
+    delete:
+      tags:
+      - user
+      summary: delete user
+      operationId: deleteUser
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+            $ref: '#/definitions/Ok'
+        404:
+          description: Invalid sesion
+          schema: 
+            $ref: '#/definitions/notFound'
+  /api/user/logout:
+    post:
+      tags:
+      - user
+      summary: logout user
+      operationId: logoutUser
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+             $ref: '#/definitions/Ok'
+        404:
+          description: Invalid session
+          schema: 
+            $ref: '#/definitions/notFound'
       
 definitions:
   signInUserModel:
@@ -110,8 +204,6 @@ definitions:
       userPassword:
         type: string
         format: password
-      xml:
-        name: signInUserModel
   signUpUserModel:
     type: object
     properties:
@@ -124,16 +216,12 @@ definitions:
       userPassword:
         type: string
         format: password
-    xml:
-      name: signUpUserModel
   changeUserEmailModel:
     type: object
     properties:
       userEmail:
         type: string
         format: unique
-    xml:
-      name: changeUserEmailModel
   changeUserPasswordModel:
     type: object
     properties:
@@ -143,8 +231,6 @@ definitions:
       newPassword:
         type: string
         format: password
-    xml:
-      name: changeUserPasswordModel
   Ok:
     type: object
     properties:
@@ -159,7 +245,19 @@ definitions:
         example: null
     xml: 
       name: Ok
-  badRequestJson:
+  created:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: true
+      responseMessage:
+        type: string
+        example: User created successfully! en
+      data: 
+        type: string
+        example: null
+  badRequest:
     type: object
     properties:
       result: 
@@ -171,22 +269,6 @@ definitions:
       data: 
         type: string
         example: null
-    xml:
-      name: badRequestJson
-  badRequestForm:
-    type: object
-    properties:
-      result: 
-        type: boolean
-        example: false
-      responseMessage:
-        type: string
-        example: Form not valid! en
-      data: 
-        type: string
-        example: null
-    xml:
-      name: badRequestForm
   forbidden:
     type: object
     properties:
@@ -199,14 +281,44 @@ definitions:
       data: 
         type: string
         example: null
-    xml: 
-      name: forbidden
+  notFound:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: false
+      responseMessage:
+        type: string
+        example: Invalid session! en
+      data: 
+        type: string
+        example: null
+  conflict:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: false
+      responseMessage:
+        type: string
+        example: Login already occupied! en
+      data: 
+        type: string
+        example: null
+    
+      
+    
+    
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
-basePath: /HustonMmmavr/server_api/1.0.0
+# basePath: /HustonMmmavr/server_api/1.0.0
 schemes:
  - https
  - http
+# Added by API Auto Mocking Plugin
+# basePath: /HustonMmmavr/new/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /HustonMmmavr/server_api/1.0.0

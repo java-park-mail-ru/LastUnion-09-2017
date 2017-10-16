@@ -179,6 +179,22 @@ public class UserManager {
         }
         return ResponseCode.OK;
     }
+
+    public ResponseCode changeUserHighScore(@NotNull String userName, int score) {
+        try {
+            final UserModel user = userDAO.getUserByName(userName);
+            final UserModel modifiedUser = new UserModel(user);
+            modifiedUser.setUserHighScore(score);
+            userDAO.modifyUser(user, modifiedUser);
+        } catch (EmptyResultDataAccessException ex) {
+            return ResponseCode.INCORRECT_LOGIN;
+        } catch (DataAccessException daEx) {
+            LOGGER.info(daEx.getMessage());
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
+    }
+
     /*
     @SuppressWarnings("unused")
     public ResponseCode getUserById(@NotNull final Integer userId, UserModel user){
