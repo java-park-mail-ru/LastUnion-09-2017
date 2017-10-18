@@ -54,7 +54,6 @@ public class UserController {
 
             case OK:
                 // filling info about user
-                userView.setUserId(userModel.getUserId());
                 userView.setUserLogin(userModel.getUserName());
                 userView.setUserEmail(userModel.getUserEmail());
                 userView.setUserHighScore(userModel.getUserHighScore());
@@ -222,7 +221,7 @@ public class UserController {
 
     @RequestMapping(path = "/api/user/score", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getScoreBoard(HttpSession httpSession) {
+    public ResponseEntity<Object> getHighScore(HttpSession httpSession) {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode(false,

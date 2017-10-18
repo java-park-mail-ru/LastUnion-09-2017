@@ -141,9 +141,8 @@
                 <version>2.12</version>
                 <configuration>
 					<includes>
-						<include>**/*_IT.java</include>
+						<include>**/*IntTest.java</include>
 					</includes>
-                    <!--<groups>com.lastunion.tests.IntegrationTest</groups>-->
                 </configuration>
 				<executions>
 					<execution>
@@ -154,18 +153,6 @@
 						</goals>
 					</execution>
 				</executions>
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>integration-test</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<includes>-->
-                                <!--<include>**/*IT.class</include>-->
-                            <!--</includes>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
 			</plugin>
 
 			<plugin>

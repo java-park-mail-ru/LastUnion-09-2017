@@ -12,7 +12,7 @@ paths:
   /api/user/signin:
     post:
       tags:
-      - user
+      - uesr
       summary: Sign in user into the server
       description: Sign in user into the server
       operationId: signInUser
@@ -81,7 +81,7 @@ paths:
         200:
           description: Successfull operation
           schema:
-             $ref: '#/definitions/Ok'
+             $ref: '#/definitions/Ok1'
         403:
           description: Invalid login or password
           schema: 
@@ -193,6 +193,25 @@ paths:
           description: Invalid session
           schema: 
             $ref: '#/definitions/notFound'
+            
+  /api/user/score:
+    get:
+      tags:
+      - user
+      summary: get high score user
+      operationId: getHighScore
+      produces:
+      - application/json
+      parametres: []
+      responses:
+        200:
+          description: Successfull operation
+          schema:
+             $ref: '#/definitions/Ok2'
+        404:
+          description: Invalid session
+          schema: 
+            $ref: '#/definitions/notFound'
       
 definitions:
   signInUserModel:
@@ -245,6 +264,46 @@ definitions:
         example: null
     xml: 
       name: Ok
+      
+  Ok1:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: true
+      responseMessage:
+        type: string
+        example: Ok! en
+      data: 
+        type: object
+        properties:
+          userName: 
+            type: string
+            example: "user"
+          userEmail: 
+            type: string
+            exmaple: "user@u.u"
+          userHighScore:
+            type: integer
+            example: 157
+    xml: 
+      name: Ok1
+      
+  Ok2:
+    type: object
+    properties:
+      result: 
+        type: boolean
+        example: true
+      responseMessage:
+        type: string
+        example: Ok! en
+      data: 
+        type: string
+        example: 0
+    xml: 
+      name: Ok1
+      
   created:
     type: object
     properties:
@@ -319,6 +378,4 @@ schemes:
  - https
  - http
 # Added by API Auto Mocking Plugin
-# basePath: /HustonMmmavr/new/1.0.0
-# Added by API Auto Mocking Plugin
-basePath: /HustonMmmavr/server_api/1.0.0
+basePath: /HustonMmmavr/new/1.0.0

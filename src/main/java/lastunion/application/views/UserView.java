@@ -5,7 +5,6 @@ import lastunion.application.models.UserModel;
 import javax.validation.constraints.NotNull;
 
 public class UserView implements AbstractView {
-    private Integer userId;
     private String userLogin;
     private String userEmail;
     private Integer userHighScore;
@@ -15,16 +14,9 @@ public class UserView implements AbstractView {
 
     @SuppressWarnings("unused")
     public UserView(@NotNull UserModel userModel) {
-        this.userId = userModel.getUserId();
         this.userLogin = userModel.getUserName();
         this.userEmail = userModel.getUserEmail();
         this.userHighScore = userModel.getUserHighScore();
-    }
-
-
-    @SuppressWarnings("unused")
-    public Integer getUserId() {
-        return userId;
     }
 
     @SuppressWarnings("unused")
@@ -42,10 +34,6 @@ public class UserView implements AbstractView {
         return userHighScore;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
     }
@@ -61,7 +49,7 @@ public class UserView implements AbstractView {
     @Override
     @SuppressWarnings("OverlyComplexBooleanExpression")
     public final boolean isFilled() {
-        return userId != null && userLogin != null && userEmail != null && userHighScore != null;
+        return userLogin != null && userEmail != null && userHighScore != null;
     }
 
     @Override
