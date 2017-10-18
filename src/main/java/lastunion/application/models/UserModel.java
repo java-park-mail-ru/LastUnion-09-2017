@@ -37,6 +37,7 @@ public final class UserModel {
     Getters and Setters
      */
 
+    @SuppressWarnings("unused")
     public Integer getUserId() {
         return userId;
     }

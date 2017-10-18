@@ -190,13 +190,13 @@ public class UserManagerIntTest {
 
     @Test
     public void changeUserHighScoreOk() {
-        UserManager.ResponseCode responseCode = userManager.changeUserHighScore(userName, 100);
+        final UserManager.ResponseCode responseCode = userManager.changeUserHighScore(userName, 100);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
     public void changeUserHighScoreError() {
-        UserManager.ResponseCode responseCode = userManager.changeUserHighScore(faker.name().username(), 100);
+        final UserManager.ResponseCode responseCode = userManager.changeUserHighScore(faker.name().username(), 100);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 }
