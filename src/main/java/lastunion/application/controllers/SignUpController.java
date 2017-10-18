@@ -50,7 +50,7 @@ public class SignUpController {
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case OK:
-                httpSession.setAttribute("userLogin", signUpView.getUserName());
+                httpSession.setAttribute("userName", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
                     messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
                     HttpStatus.CREATED);
