@@ -53,7 +53,6 @@ public class ChangePaswordIntTest {
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
-    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
     public void setUp() throws Exception {
         userName = faker.name().username();
@@ -61,12 +60,7 @@ public class ChangePaswordIntTest {
         userPassword = faker.internet().password();
         pathUrl = "/api/user/change_password";
 
-        try {
-            createUser();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException();
-        }
+        createUser();
     }
 
     @Test
