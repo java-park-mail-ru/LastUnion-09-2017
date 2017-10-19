@@ -42,7 +42,7 @@ public class UserManager {
 
     // Work with password
     ////////////////////////////////////////////////////////////////////////
-    @Bean
+    @Autowired
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
