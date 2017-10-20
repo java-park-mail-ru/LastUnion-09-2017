@@ -47,17 +47,17 @@ public class UserManager {
     }
 
     // TODO return ResponseCode
-    public boolean checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
+    public ResponseCode checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
         try {
             final UserModel savedUser = userDAO.getUserByName(userLogin);
 
             if (passwordEncoder().matches(password, savedUser.getUserPasswordHash())) {
-                return true;
+                return ResponseCode.OK;
             }
         } catch (DataAccessException ex) {
-            return false;
+            return ResponseCode.DATABASE_ERROR;
         }
-        return false;
+        return ResponseCode.INCORRECT_PASSWORD;
     }
 
     public ResponseCode signInUser(@NotNull final SignInModel signInUserData) {
@@ -114,8 +114,15 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public boolean userExists(@Nullable String userName) {
-        return userName != null && userDAO.userExist(userName);
+    public boolean userExists(@NotNull String userName) {
+        try {
+            if (!userDAO.userExist(userName)) {
+                return ResponseCode.INCORRECT_LOGIN;
+            }
+        } catch (DataAccessException daEx) {
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
     }
 
     public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName) {

@@ -145,13 +145,27 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePassword(@RequestBody PasswordView passwordView,
                                                        HttpSession httpSession) {
-        // Check is there userName
+        // First part we check user
         final String userName = (String) httpSession.getAttribute("userName");
-
-        if (!userManager.userExists(userName)) {
+        if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
                     HttpStatus.NOT_FOUND);
+        }
+
+        final UserManager.ResponseCode responseCodeCheckUser = userManager.userExist(userName);
+        switch (responseCodeCheckUser) {
+            case INCORRECT_LOGIN:
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
+                        HttpStatus.NOT_FOUND);
+            case OK:
+                break;
+
+            default:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
@@ -167,14 +181,22 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        if (!userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName)) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
-                    HttpStatus.FORBIDDEN);
+        final UserManager.ResponseCode responseCodeCheckPassword = userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName);
+        switch(responseCodeCheckPassword) {
+            case INCORRECT_PASSWORD:
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
+                        HttpStatus.FORBIDDEN);
+            case OK:
+                break;
+
+            default:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         final UserManager.ResponseCode responseCode = userManager.changeUserPassword(passwordView.getNewPassword(), userName);
-
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case OK:
