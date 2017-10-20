@@ -1,4 +1,4 @@
-package lastunion.application.Views;
+package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,12 +10,12 @@ import javax.mail.internet.InternetAddress;
 public final class EmailView implements AbstractView {
     private String newEmail;
 
-    @JsonCreator
-    public EmailView(@JsonProperty("userEmail") String newUserEmail){
+    @SuppressWarnings("unused")
+    public EmailView(@JsonProperty("userEmail") String newUserEmail) {
         this.newEmail = newUserEmail;
     }
 
-    public String getNewEmail(){
+    public String getNewEmail() {
         return newEmail;
     }
 
@@ -25,11 +25,18 @@ public final class EmailView implements AbstractView {
     }
 
     @Override
-    public boolean isFilled() {  return newEmail != null;    }
+    public boolean isFilled() {
+        return newEmail != null;
+    }
+
     @Override
-    public boolean isValid(){
-        if (!isFilled()) return false;
-        if (!isFilled()) return false;
+    public boolean isValid() {
+        if (!isFilled()) {
+            return false;
+        }
+        if (!isFilled()) {
+            return false;
+        }
         try {
             final InternetAddress emailAddr = new InternetAddress(newEmail);
             emailAddr.validate();

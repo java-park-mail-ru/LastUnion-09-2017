@@ -1,9 +1,9 @@
-package lastunion.application.Controllers;
+package lastunion.application.controllers;
 
-import lastunion.application.Managers.UserManager;
-import lastunion.application.Models.SignInModel;
-import lastunion.application.Views.ResponseCode;
-import lastunion.application.Views.SignInView;
+import lastunion.application.managers.UserManager;
+import lastunion.application.models.SignInModel;
+import lastunion.application.views.ResponseCode;
+import lastunion.application.views.SignInView;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-//@CrossOrigin(origins = "")
+@CrossOrigin(origins = "${frontend_url}")
 @RestController
 public class SignInController {
     @NotNull
@@ -27,15 +27,21 @@ public class SignInController {
         this.userManager = userManager;
     }
 
-    @RequestMapping(path="/api/user/signin", method = RequestMethod.POST,
-                    produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
-                    )
+    @RequestMapping(path = "/api/user/signin", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ResponseCode> signIn(@RequestBody SignInView signInView, HttpSession httpSession) {
 
-        // Incorrect authenticatiion data
-        if (!signInView.isValid()){
+        if (!signInView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH), null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // Incorrect authenticatiion data
+        if (!signInView.isValid()) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),
                     HttpStatus.BAD_REQUEST);
         }
         final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());
@@ -45,24 +51,22 @@ public class SignInController {
         switch (responseCode) {
 
             case INCORRECT_LOGIN:
-            case INCORRECT_PASSWORD: {
+            case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
                         HttpStatus.FORBIDDEN);
-            }
 
-            case OK: {
-                httpSession.setAttribute("userLogin", signInView.getUserName());
+            case OK:
+                httpSession.setAttribute("userName", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH), null),
                         HttpStatus.OK);
-            }
 
-            default: {
+            default:
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH), null),
                         HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+
         }
     }
 }
