@@ -28,48 +28,47 @@ public class SignUpController {
     }
 
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> signUp(@RequestBody SignUpView signUpView, HttpSession httpSession) {
 
         if (!signUpView.isFilled()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH), null),
-                HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH), null),
+                    HttpStatus.BAD_REQUEST);
         }
         // Incorrect reg data
         if (!signUpView.isValid()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),
-                HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),
+                    HttpStatus.BAD_REQUEST);
         }
 
         final SignUpModel signUpUser = new SignUpModel(signUpView.getUserName(), signUpView.getUserPassword(),
-            signUpView.getUserEmail());
+                signUpView.getUserEmail());
 
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case OK:
                 httpSession.setAttribute("userName", signUpView.getUserName());
-                return new ResponseEntity<>(new ResponseCode(true,
-                    messageSource.getMessage("msgs.created", null, Locale.ENGLISH), null),
-                    HttpStatus.CREATED);
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.created", null, Locale.ENGLISH), null),
+                        HttpStatus.CREATED);
 
             case LOGIN_IS_TAKEN:
-                return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.conflict_login", null, Locale.ENGLISH), null),
-                    HttpStatus.CONFLICT);
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.conflict_login", null, Locale.ENGLISH), null),
+                        HttpStatus.CONFLICT);
 
             case EMAIL_IS_TAKEN:
-                return new ResponseEntity<>(new ResponseCode(false,
+                return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.conflict_email", null, Locale.ENGLISH), null),
                         HttpStatus.CONFLICT);
 
             default:
-                return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH), null),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

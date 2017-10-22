@@ -57,15 +57,15 @@ public class UserManagerIntTest {
 
     @Test
     public void checkPasswordByUserNameOk() {
-        final boolean result = userManager.checkPasswordByUserName(userPassword, userName);
-        assertSame(result, true);
+        final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(userPassword, userName);
+        assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void checkPasswordByUserNameWithIncorrectPassword() {
-        final boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
-        assertSame(result, false);
+        final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(faker.internet().password(), userName);
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_PASSWORD);
     }
 
     @Test
@@ -113,20 +113,20 @@ public class UserManagerIntTest {
 
     @Test
     public void checkUserThatExist() {
-        final boolean result = userManager.userExists(userName);
-        assertSame(result, true);
+        final UserManager.ResponseCode responseCode = userManager.userExists(userName);
+        assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
     public void checkNullUser() {
-        final boolean result = userManager.userExists(faker.name().username());
-        assertSame(result, false);
+        final UserManager.ResponseCode responseCode = userManager.userExists(faker.name().username());
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
     public void checkUserThatNotExist() {
-        final boolean result = userManager.userExists(null);
-        assertSame(result, false);
+        final UserManager.ResponseCode responseCode = userManager.userExists(null);
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test

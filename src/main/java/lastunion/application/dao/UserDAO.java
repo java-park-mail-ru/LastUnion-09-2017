@@ -66,15 +66,21 @@ public class UserDAO {
     }
 
     public void modifyUser(UserModel user, UserModel changedUser) {
+        final String query = "UPDATE users set username=?, useremail=?, userpassword=?, userscore=? WHERE usernam=?";
         final StringBuilder builder = new StringBuilder("UPDATE users set ");
-        appendStringField(builder, "username", changedUser.getUserName());
-        appendStringField(builder, "useremail", changedUser.getUserEmail());
-        appendStringField(builder, "userpassword", changedUser.getUserPasswordHash());
-        appendIntegerField(builder, "userscore", changedUser.getUserHighScore());
-        builder.append(" WHERE ");
-        appendStringField(builder, "username", user.getUserName());
-        builder.deleteCharAt(builder.length() - 1);
-        executeQuery(builder.toString());
+//        appendStringField(builder, "username", changedUser.getUserName());
+//        appendStringField(builder, "useremail", changedUser.getUserEmail());
+//        appendStringField(builder, "userpassword", changedUser.getUserPasswordHash());
+//        appendIntegerField(builder, "userscore", changedUser.getUserHighScore());
+//        builder.append(" WHERE ");
+//        appendStringField(builder, "username", user.getUserName());
+//        builder.deleteCharAt(builder.length() - 1);
+//        executeQuery(builder.toString());
+//        jdbcTemplate.query(query, new Object[]{changedUser.getUserName()},
+//                new Object[]{changedUser.getUserEmail()},
+//                new Object[]{changedUser.getUserPasswordHash()},
+//                new Object[]{changedUser.getUserHighScore()},
+//                new Object[]{user.getUserName()});
     }
 
     @SuppressWarnings("StringBufferReplaceableByString")

@@ -9,10 +9,10 @@ public final class ResponseCode<T> {
     private final String responseMessage;
     private final T data;
 
-    @JsonCreator
+    //@JsonCreator
     public ResponseCode(@JsonProperty("result") boolean result,
                         @JsonProperty("responseMessage") String responseMessage,
-                        @Nullable @JsonProperty("data") T data) {
+                        @JsonProperty("data") @Nullable T data) {
         this.result = result;
         this.responseMessage = responseMessage;
         this.data = data;

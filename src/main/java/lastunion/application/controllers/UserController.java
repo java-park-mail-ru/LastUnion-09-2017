@@ -123,7 +123,7 @@ public class UserController {
                         HttpStatus.NOT_FOUND);
 
             case EMAIL_IS_TAKEN:
-                return new ResponseEntity<>(new ResponseCode(false,
+                return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.conflict_email", null, Locale.ENGLISH), null),
                         HttpStatus.CONFLICT);
 
@@ -153,7 +153,7 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        final UserManager.ResponseCode responseCodeCheckUser = userManager.userExist(userName);
+        final UserManager.ResponseCode responseCodeCheckUser = userManager.userExists(userName);
         switch (responseCodeCheckUser) {
             case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(true,
@@ -182,7 +182,7 @@ public class UserController {
         }
 
         final UserManager.ResponseCode responseCodeCheckPassword = userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName);
-        switch(responseCodeCheckPassword) {
+        switch (responseCodeCheckPassword) {
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
@@ -229,12 +229,12 @@ public class UserController {
         switch (responseCode) {
             case OK:
                 httpSession.invalidate();
-                return new ResponseEntity<>(new ResponseCode(true,
+                return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH), null),
                         HttpStatus.OK);
 
             default:
-                return new ResponseEntity<>(new ResponseCode(false,
+                return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH), null),
                         HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -246,7 +246,7 @@ public class UserController {
     public ResponseEntity<Object> getHighScore(HttpSession httpSession) {
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
-            return new ResponseEntity<>(new ResponseCode(false,
+            return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
                     HttpStatus.NOT_FOUND);
         }

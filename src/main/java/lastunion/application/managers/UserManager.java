@@ -114,7 +114,7 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public boolean userExists(@NotNull String userName) {
+    public ResponseCode userExists(@NotNull String userName) {
         try {
             if (!userDAO.userExist(userName)) {
                 return ResponseCode.INCORRECT_LOGIN;
