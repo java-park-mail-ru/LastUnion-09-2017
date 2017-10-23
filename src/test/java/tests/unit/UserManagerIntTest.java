@@ -32,8 +32,6 @@ import static org.junit.Assert.assertSame;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@TransactionConfiguration(defaultRollback = true)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
 public class UserManagerIntTest {
     @Autowired
@@ -126,13 +124,13 @@ public class UserManagerIntTest {
     }
 
     @Test
-    public void checkNullUser() {
+    public void checkThatNotExist() {
         final UserManager.ResponseCode responseCode = userManager.userExists(faker.name().username());
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
-    public void checkUserThatNotExist() {
+    public void checkUserNull() {
         final UserManager.ResponseCode responseCode = userManager.userExists(null);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }

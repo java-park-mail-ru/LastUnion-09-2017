@@ -19,12 +19,13 @@ import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
+@SuppressWarnings({"UnnecessaryFullyQualifiedName", "RedundantSuppression"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Transactional
 public class ChangePaswordIntTest {
+
     @Autowired
     private MockMvc mock;
     private static Faker faker;

@@ -47,7 +47,7 @@ public class UserView implements AbstractView {
     }
 
     @Override
-    @SuppressWarnings("OverlyComplexBooleanExpression")
+    @SuppressWarnings({"OverlyComplexBooleanExpression", "RedundantSuppression"})
     public final boolean isFilled() {
         return userLogin != null && userEmail != null && userHighScore != null;
     }

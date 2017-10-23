@@ -138,6 +138,7 @@ public class UserController {
     }
 
 
+    @SuppressWarnings("OverlyComplexMethod")
     @RequestMapping(path = "/api/user/change_password", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePassword(@RequestBody PasswordView passwordView,
@@ -150,6 +151,7 @@ public class UserController {
         }
 
         final UserManager.ResponseCode responseCodeCheckUser = userManager.userExists(userName);
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCodeCheckUser) {
             case INCORRECT_LOGIN:
                 return new ResponseEntity<>(new ResponseCode<>(false,
@@ -178,6 +180,7 @@ public class UserController {
         }
 
         final UserManager.ResponseCode responseCodeCheckPassword = userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName);
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCodeCheckPassword) {
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode<>(false,

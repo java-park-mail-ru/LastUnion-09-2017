@@ -35,7 +35,6 @@ public class ChangeEmailIIntTest {
     private static String pathUrl;
     private static String userName;
     private static String userEmail;
-    private static String userPassword;
 
 
     @SuppressWarnings("MissortedModifiers")
@@ -61,14 +60,10 @@ public class ChangeEmailIIntTest {
     public void setUp() throws Exception {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
-        userPassword = faker.internet().password();
+        final String userPassword = faker.internet().password();
         pathUrl = "/api/user/change_email";
 
-        try {
-            createUser(userName, userPassword, userEmail);
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
+        createUser(userName, userPassword, userEmail);
     }
 
     @Test

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 @Service
 public class UserManager {
@@ -121,7 +122,8 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode userExists(@NotNull String userName) {
+    public ResponseCode userExists(@Nullable String userName) {
+        if (userName == null) return ResponseCode.INCORRECT_LOGIN;
         try {
             if (!userDAO.userExist(userName)) {
                 return ResponseCode.INCORRECT_LOGIN;
