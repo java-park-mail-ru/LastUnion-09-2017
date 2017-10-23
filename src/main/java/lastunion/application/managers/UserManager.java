@@ -1,7 +1,6 @@
 package lastunion.application.managers;
 
 
-import com.sun.org.apache.regexp.internal.RE;
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
@@ -19,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 @Service
 public class UserManager {
