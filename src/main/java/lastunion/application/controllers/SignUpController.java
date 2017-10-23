@@ -36,7 +36,6 @@ public class SignUpController {
                     messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH), null),
                     HttpStatus.BAD_REQUEST);
         }
-        // Incorrect reg data
         if (!signUpView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),

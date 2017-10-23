@@ -53,7 +53,6 @@ public class UserController {
                         HttpStatus.FORBIDDEN);
 
             case OK:
-                // filling info about user
                 userView.setUserLogin(userModel.getUserName());
                 userView.setUserEmail(userModel.getUserEmail());
                 userView.setUserHighScore(userModel.getUserHighScore());
@@ -92,7 +91,6 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changeEmail(@RequestBody EmailView emailView,
                                                     HttpSession httpSession) {
-        // Check is there userName
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,
@@ -106,7 +104,6 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // check form for valid
         if (!emailView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),
@@ -145,7 +142,6 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePassword(@RequestBody PasswordView passwordView,
                                                        HttpSession httpSession) {
-        // First part we check user
         final String userName = (String) httpSession.getAttribute("userName");
         if (userName == null) {
             return new ResponseEntity<>(new ResponseCode<>(false,

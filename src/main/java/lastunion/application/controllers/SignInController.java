@@ -38,7 +38,6 @@ public class SignInController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Incorrect authenticatiion data
         if (!signInView.isValid()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH), null),

@@ -48,8 +48,6 @@ public class UserManager {
 //    }
 
 
-    // Work with password
-    ////////////////////////////////////////////////////////////////////////
     @Autowired
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
