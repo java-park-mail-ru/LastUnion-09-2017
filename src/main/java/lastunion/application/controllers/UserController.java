@@ -138,7 +138,6 @@ public class UserController {
     }
 
 
-    @SuppressWarnings("OverlyComplexMethod")
     @RequestMapping(path = "/api/user/change_password", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePassword(@RequestBody PasswordView passwordView,
@@ -149,23 +148,6 @@ public class UserController {
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
                     HttpStatus.NOT_FOUND);
         }
-
-        final UserManager.ResponseCode responseCodeCheckUser = userManager.userExists(userName);
-        //noinspection EnumSwitchStatementWhichMissesCases
-        switch (responseCodeCheckUser) {
-            case INCORRECT_LOGIN:
-                return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
-                        HttpStatus.NOT_FOUND);
-            case OK:
-                break;
-
-            default:
-                return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH), null),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
 
         if (!passwordView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode<>(false,
@@ -179,25 +161,20 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        final UserManager.ResponseCode responseCodeCheckPassword = userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName);
+        final UserManager.ResponseCode responseCode = userManager.changeUserPassword(passwordView.getOldPassword(),
+                passwordView.getNewPassword(), userName);
         //noinspection EnumSwitchStatementWhichMissesCases
-        switch (responseCodeCheckPassword) {
+        switch (responseCode) {
+            case INCORRECT_LOGIN:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
+                        HttpStatus.NOT_FOUND);
+
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
                         HttpStatus.FORBIDDEN);
-            case OK:
-                break;
 
-            default:
-                return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.interanl_server_error", null, Locale.ENGLISH), null),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        final UserManager.ResponseCode responseCode = userManager.changeUserPassword(passwordView.getNewPassword(), userName);
-        //noinspection EnumSwitchStatementWhichMissesCases
-        switch (responseCode) {
             case OK:
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH), null),

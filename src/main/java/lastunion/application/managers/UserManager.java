@@ -1,6 +1,7 @@
 package lastunion.application.managers;
 
 
+import com.sun.org.apache.regexp.internal.RE;
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
@@ -135,7 +136,15 @@ public class UserManager {
         return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName) {
+    public ResponseCode changeUserPassword(@NotNull final String oldPassword, @NotNull String newPassword, @NotNull final String userName) {
+        final ResponseCode checkUserResponseCode = userExists(userName);
+        if (checkUserResponseCode != ResponseCode.OK)
+            return checkUserResponseCode;
+
+        final ResponseCode checkPasswordResponseCode = checkPasswordByUserName(oldPassword, userName);
+        if (checkPasswordResponseCode != ResponseCode.OK)
+            return checkPasswordResponseCode;
+
         try {
             final UserModel user = userDAO.getUserByName(userName);
             final UserModel modifiedUser = new UserModel(user);
