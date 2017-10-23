@@ -39,6 +39,15 @@ public class UserManager {
         userDAO = new UserDAO(jdbcTemplate);
     }
 
+    // TODO message and stack trace
+//    private void logException(Exception e) {
+//        for(StackTraceElement stackEl: e.getStackTrace()) {
+//            LOGGER.info(stackEl.toString());
+//        }
+//        LOGGER.info(e.getMessage());
+//    }
+
+
     // Work with password
     ////////////////////////////////////////////////////////////////////////
     @Autowired
@@ -46,7 +55,6 @@ public class UserManager {
         return new BCryptPasswordEncoder();
     }
 
-    // TODO return ResponseCode
     public ResponseCode checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
         try {
             final UserModel savedUser = userDAO.getUserByName(userLogin);
@@ -54,7 +62,8 @@ public class UserManager {
             if (passwordEncoder().matches(password, savedUser.getUserPasswordHash())) {
                 return ResponseCode.OK;
             }
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error Database", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.INCORRECT_PASSWORD;
@@ -70,7 +79,8 @@ public class UserManager {
             }
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error Database", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -82,15 +92,14 @@ public class UserManager {
 
         try {
             userDAO.saveUser(newUser);
-            LOGGER.info("User registered with name " + newUser.getUserName());
         } catch (DuplicateKeyException dupEx) {
-            if (userDAO.userExist(newUser.getUserName())) {
+            if (dupEx.getMessage().contains("username_key")) {
                 return ResponseCode.LOGIN_IS_TAKEN;
             } else {
                 return ResponseCode.EMAIL_IS_TAKEN;
             }
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
 
@@ -108,7 +117,7 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -120,6 +129,7 @@ public class UserManager {
                 return ResponseCode.INCORRECT_LOGIN;
             }
         } catch (DataAccessException daEx) {
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -134,7 +144,7 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -149,7 +159,7 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -161,7 +171,7 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -176,7 +186,7 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;

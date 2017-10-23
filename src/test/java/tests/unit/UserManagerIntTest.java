@@ -15,9 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.beans.Transient;
 import java.util.Locale;
 
 import static junit.framework.TestCase.assertTrue;
@@ -27,7 +32,9 @@ import static org.junit.Assert.assertSame;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(tests.IntegrationTest.class)
+@TransactionConfiguration(defaultRollback = true)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class UserManagerIntTest {
     @Autowired
     private UserManager userManager;
@@ -35,6 +42,7 @@ public class UserManagerIntTest {
     private static String userEmail;
     private static String userName;
     private static String userPassword;
+
 
     @BeforeClass
     public static void setUpFaker() {

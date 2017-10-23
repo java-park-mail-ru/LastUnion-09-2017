@@ -156,7 +156,7 @@ public class UserController {
         final UserManager.ResponseCode responseCodeCheckUser = userManager.userExists(userName);
         switch (responseCodeCheckUser) {
             case INCORRECT_LOGIN:
-                return new ResponseEntity<>(new ResponseCode<>(true,
+                return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH), null),
                         HttpStatus.NOT_FOUND);
             case OK:
@@ -184,7 +184,7 @@ public class UserController {
         final UserManager.ResponseCode responseCodeCheckPassword = userManager.checkPasswordByUserName(passwordView.getOldPassword(), userName);
         switch (responseCodeCheckPassword) {
             case INCORRECT_PASSWORD:
-                return new ResponseEntity<>(new ResponseCode<>(true,
+                return new ResponseEntity<>(new ResponseCode<>(false,
                         messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH), null),
                         HttpStatus.FORBIDDEN);
             case OK:
