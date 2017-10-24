@@ -30,18 +30,18 @@ public class SignInController {
     @RequestMapping(path = "/api/user/signin", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<ResponseCode> signIn(@RequestBody SignInView signInView, HttpSession httpSession) {
+    public ResponseEntity<ResponseCode> signIn(Locale locale, @RequestBody SignInView signInView, HttpSession httpSession) {
 
         if (!signInView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_json", null, locale)),
                     HttpStatus.BAD_REQUEST);
         }
 
         // Incorrect authenticatiion data
         if (!signInView.isValid()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.bad_request_form", null, locale)),
                     HttpStatus.BAD_REQUEST);
         }
         final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());
@@ -53,18 +53,18 @@ public class SignInController {
             case INCORRECT_LOGIN:
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.forbidden", null, locale)),
                         HttpStatus.FORBIDDEN);
 
             case OK:
                 httpSession.setAttribute("userName", signInView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
-                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.ok", null, locale)),
                         HttpStatus.OK);
 
             default:
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.internal_server_error", null, locale)),
                         HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

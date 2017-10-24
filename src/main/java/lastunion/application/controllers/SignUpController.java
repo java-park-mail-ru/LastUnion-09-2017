@@ -29,17 +29,17 @@ public class SignUpController {
 
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode> signUp(@RequestBody SignUpView signUpView, HttpSession httpSession) {
+    public ResponseEntity<ResponseCode> signUp(Locale locale, @RequestBody SignUpView signUpView, HttpSession httpSession) {
 
         if (!signUpView.isFilled()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
+                messageSource.getMessage("msgs.bad_request_json", null, locale)),
                 HttpStatus.BAD_REQUEST);
         }
         // Incorrect reg data
         if (!signUpView.isValid()) {
             return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
+                messageSource.getMessage("msgs.bad_request_form", null, locale)),
                 HttpStatus.BAD_REQUEST);
         }
 
@@ -52,22 +52,22 @@ public class SignUpController {
             case OK:
                 httpSession.setAttribute("userName", signUpView.getUserName());
                 return new ResponseEntity<>(new ResponseCode(true,
-                    messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.created", null, locale)),
                     HttpStatus.CREATED);
 
             case LOGIN_IS_TAKEN:
                 return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.conflict_login", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.conflict_login", null, locale)),
                     HttpStatus.CONFLICT);
 
             case EMAIL_IS_TAKEN:
                 return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.conflict_email", null, Locale.ENGLISH)),
+                        messageSource.getMessage("msgs.conflict_email", null, locale)),
                         HttpStatus.CONFLICT);
 
             default:
                 return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                    messageSource.getMessage("msgs.internal_server_error", null, locale)),
                     HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
