@@ -12,6 +12,7 @@ public class SignUpView implements AbstractView {
     private final String userEmail;
 
     @SuppressWarnings("unused")
+    @JsonCreator
     SignUpView(@JsonProperty("userName") String userName, @JsonProperty("userPassword") String userPassword,
                @JsonProperty("userEmail") String userEmail) {
         this.userName = userName;

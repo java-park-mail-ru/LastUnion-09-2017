@@ -11,6 +11,7 @@ public final class EmailView implements AbstractView {
     private String newEmail;
 
     @SuppressWarnings("unused")
+    @JsonCreator
     public EmailView(@JsonProperty("userEmail") String newUserEmail) {
         this.newEmail = newUserEmail;
     }

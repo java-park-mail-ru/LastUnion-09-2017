@@ -1,6 +1,7 @@
 package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class SignInView implements AbstractView {
@@ -8,6 +9,7 @@ public final class SignInView implements AbstractView {
     private final String userPassword;
 
     @SuppressWarnings("unused")
+    @JsonCreator
     SignInView(@JsonProperty("userName") String userName,
                @JsonProperty("userPassword") String userPassword) {
         this.userName = userName;

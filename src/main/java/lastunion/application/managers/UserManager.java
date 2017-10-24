@@ -39,15 +39,6 @@ public class UserManager {
         userDAO = new UserDAO(jdbcTemplate);
     }
 
-    // TODO message and stack trace
-//    private void logException(Exception e) {
-//        for(StackTraceElement stackEl: e.getStackTrace()) {
-//            LOGGER.info(stackEl.toString());
-//        }
-//        LOGGER.info(e.getMessage());
-//    }
-
-
     @Autowired
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -77,6 +68,7 @@ public class UserManager {
             }
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
+
         } catch (DataAccessException daEx) {
             LOGGER.error("Error Database", daEx);
             return ResponseCode.DATABASE_ERROR;

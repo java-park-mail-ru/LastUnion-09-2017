@@ -8,6 +8,7 @@ public final class PasswordView implements AbstractView {
     private final String newPassword;
 
     @SuppressWarnings("unused")
+    @JsonCreator
     public PasswordView(@JsonProperty("oldPassword") String oldPassword,
                         @JsonProperty("newPassword") String newPassword) {
         this.newPassword = newPassword;
