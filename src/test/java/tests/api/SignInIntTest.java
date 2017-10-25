@@ -13,27 +13,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-<<<<<<< HEAD:src/test/java/tests/api/SignInIntTest.java
-=======
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> dev:src/test/java/tests/api/SignInIntTest.java
 
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-<<<<<<< HEAD:src/test/java/tests/api/SignInIntTest.java
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class)
-@AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-=======
 @SuppressWarnings({"UnnecessaryFullyQualifiedName", "RedundantSuppression"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Transactional
->>>>>>> dev:src/test/java/tests/api/SignInIntTest.java
 public class SignInIntTest {
     @Autowired
     private MockMvc mock;

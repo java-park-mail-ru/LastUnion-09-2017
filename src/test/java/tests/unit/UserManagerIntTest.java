@@ -9,20 +9,13 @@ import lastunion.application.models.UserModel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-<<<<<<< HEAD
-import org.junit.experimental.categories.Category;
-=======
->>>>>>> dev
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-<<<<<<< HEAD
-=======
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> dev
 
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
@@ -34,11 +27,7 @@ import static org.junit.Assert.assertSame;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-<<<<<<< HEAD
-@Category(tests.IntegrationTest.class)
-=======
 @Transactional
->>>>>>> dev
 public class UserManagerIntTest {
     @Autowired
     private UserManager userManager;
@@ -47,10 +36,6 @@ public class UserManagerIntTest {
     private static String userName;
     private static String userPassword;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
     @BeforeClass
     public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
@@ -72,25 +57,15 @@ public class UserManagerIntTest {
 
     @Test
     public void checkPasswordByUserNameOk() {
-<<<<<<< HEAD
-        final boolean result = userManager.checkPasswordByUserName(userPassword, userName);
-        assertSame(result, true);
-=======
         final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(userPassword, userName);
         assertSame(responseCode, UserManager.ResponseCode.OK);
->>>>>>> dev
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void checkPasswordByUserNameWithIncorrectPassword() {
-<<<<<<< HEAD
-        final boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
-        assertSame(result, false);
-=======
         final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(faker.internet().password(), userName);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_PASSWORD);
->>>>>>> dev
     }
 
     @Test
@@ -138,22 +113,6 @@ public class UserManagerIntTest {
 
     @Test
     public void checkUserThatExist() {
-<<<<<<< HEAD
-        final boolean result = userManager.userExists(userName);
-        assertSame(result, true);
-    }
-
-    @Test
-    public void checkNullUser() {
-        final boolean result = userManager.userExists(faker.name().username());
-        assertSame(result, false);
-    }
-
-    @Test
-    public void checkUserThatNotExist() {
-        final boolean result = userManager.userExists(null);
-        assertSame(result, false);
-=======
         final UserManager.ResponseCode responseCode = userManager.userExists(userName);
         assertSame(responseCode, UserManager.ResponseCode.OK);
     }
@@ -168,7 +127,6 @@ public class UserManagerIntTest {
     public void checkUserNull() {
         final UserManager.ResponseCode responseCode = userManager.userExists(null);
         assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
->>>>>>> dev
     }
 
     @Test
