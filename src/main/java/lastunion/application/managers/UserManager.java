@@ -39,71 +39,57 @@ public class UserManager {
         userDAO = new UserDAO(jdbcTemplate);
     }
 
-    // Work with password
-    ////////////////////////////////////////////////////////////////////////
     @Autowired
     private PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    private String makePasswordHash(@NotNull final String password) {
-        return passwordEncoder().encode(password);
-    }
-
-    private boolean checkPassword(@NotNull final String password, @NotNull final String passwordHash) {
-        return passwordEncoder().matches(password, passwordHash);
-    }
-
-    public boolean checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
+    public ResponseCode checkPasswordByUserName(@NotNull final String password, @NotNull final String userLogin) {
         try {
             final UserModel savedUser = userDAO.getUserByName(userLogin);
 
-            if (checkPassword(password, savedUser.getUserPasswordHash())) {
-                return true;
+            if (passwordEncoder().matches(password, savedUser.getUserPasswordHash())) {
+                return ResponseCode.OK;
             }
-        } catch (DataAccessException ex) {
-            return false;
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error Database", daEx);
+            return ResponseCode.DATABASE_ERROR;
         }
-        return false;
+        return ResponseCode.INCORRECT_PASSWORD;
     }
-    //////////////////////////////////////////////////////////////////////////
 
     public ResponseCode signInUser(@NotNull final SignInModel signInUserData) {
 
-        // Check user storaged in database
         try {
             final UserModel savedUser = userDAO.getUserByName(signInUserData.getUserName());
 
-            // wrong password
-            if (!checkPassword(signInUserData.getUserPassword(), savedUser.getUserPasswordHash())) {
+            if (!passwordEncoder().matches(signInUserData.getUserPassword(), savedUser.getUserPasswordHash())) {
                 return ResponseCode.INCORRECT_PASSWORD;
             }
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
-        } catch (DataAccessException ex) {
+
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error Database", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
 
     public ResponseCode signUpUser(@NotNull final SignUpModel signUpUserData) {
-
-        // Creating UserModel to stoarage
         final UserModel newUser = new UserModel(signUpUserData);
-        newUser.setUserPasswordHash(makePasswordHash(signUpUserData.getUserPassword()));
+        newUser.setUserPasswordHash(passwordEncoder().encode(signUpUserData.getUserPassword()));
 
-        // trying to save user
         try {
             userDAO.saveUser(newUser);
-            LOGGER.info("User registered with name " + newUser.getUserName());
         } catch (DuplicateKeyException dupEx) {
-            if (userDAO.userExist(newUser.getUserName())) {
+            if (dupEx.getMessage().contains("username_key")) {
                 return ResponseCode.LOGIN_IS_TAKEN;
             } else {
                 return ResponseCode.EMAIL_IS_TAKEN;
             }
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
 
@@ -111,8 +97,6 @@ public class UserManager {
     }
 
     public ResponseCode changeUserEmail(@NotNull final String newEmail, @NotNull final String userName) {
-        // trying to get storaged user and copy its data to new
-        // user, than in new user modify email and save it
         try {
             final UserModel user = userDAO.getUserByName(userName);
             final UserModel modifiedUser = new UserModel(user);
@@ -123,35 +107,53 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
 
-    public boolean userExists(@Nullable String userName) {
-        return userName != null && userDAO.userExist(userName);
+    public ResponseCode userExists(@Nullable String userName) {
+        if (userName == null) {
+            return ResponseCode.INCORRECT_LOGIN;
+        }
+        try {
+            if (!userDAO.userExist(userName)) {
+                return ResponseCode.INCORRECT_LOGIN;
+            }
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error DataBase", daEx);
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
     }
 
-    public ResponseCode changeUserPassword(@NotNull final String newPassword, @NotNull final String userName) {
-        // trying to get storaged user and copy its data to new
-        // user, than in new user modify email and save it
+    public ResponseCode changeUserPassword(@NotNull final String oldPassword, @NotNull String newPassword, @NotNull final String userName) {
+        final ResponseCode checkUserResponseCode = userExists(userName);
+        if (checkUserResponseCode != ResponseCode.OK) {
+            return checkUserResponseCode;
+        }
+
+        final ResponseCode checkPasswordResponseCode = checkPasswordByUserName(oldPassword, userName);
+        if (checkPasswordResponseCode != ResponseCode.OK) {
+            return checkPasswordResponseCode;
+        }
+
         try {
             final UserModel user = userDAO.getUserByName(userName);
             final UserModel modifiedUser = new UserModel(user);
-            modifiedUser.setUserPasswordHash(makePasswordHash(newPassword));
+            modifiedUser.setUserPasswordHash(passwordEncoder().encode(newPassword));
             userDAO.modifyUser(user, modifiedUser);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
 
     public ResponseCode getUserByName(@NotNull final String userName, UserModel user) {
-        // trying to get storaged user
         try {
             final UserModel tempUser = userDAO.getUserByName(userName);
             user.setUserName(tempUser.getUserName());
@@ -160,20 +162,19 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
 
     public ResponseCode deleteUserByName(@NotNull final String userName) {
-        // trying to get storaged user
         try {
             userDAO.deleteUserByName(userName);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
@@ -188,32 +189,9 @@ public class UserManager {
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
         } catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
+            LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
         }
         return ResponseCode.OK;
     }
-
-    /*
-    @SuppressWarnings("unused")
-    public ResponseCode getUserById(@NotNull final Integer userId, UserModel user){
-        // trying to get storaged user
-        try {
-            final UserModel tempUser = userDAO.getUserById(userId);
-            user.setUserName(tempUser.getUserName());
-            user.setUserEmail(tempUser.getUserEmail());
-            user.setUserHighScore(tempUser.getUserHighScore());
-        }
-        // No user found
-        catch (EmptyResultDataAccessException ex) {
-            return ResponseCode.INCORRECT_LOGIN;
-        }
-        // error db
-        catch (DataAccessException daEx) {
-            LOGGER.info(daEx.getMessage());
-            return ResponseCode.DATABASE_ERROR;
-        }
-        return ResponseCode.OK;
-    }
-    */
 }

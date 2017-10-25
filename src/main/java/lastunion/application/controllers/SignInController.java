@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://front-lastunion.herokuapp.com")
+@CrossOrigin(origins = "${frontend_url}")
 @RestController
 public class SignInController {
     @NotNull
@@ -33,15 +33,14 @@ public class SignInController {
     public ResponseEntity<ResponseCode> signIn(Locale locale, @RequestBody SignInView signInView, HttpSession httpSession) {
 
         if (!signInView.isFilled()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_json", null, locale)),
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, locale), null),
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Incorrect authenticatiion data
         if (!signInView.isValid()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.bad_request_form", null, locale)),
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_form", null, locale), null),
                     HttpStatus.BAD_REQUEST);
         }
         final SignInModel signInUser = new SignInModel(signInView.getUserName(), signInView.getUserPassword());
@@ -52,19 +51,19 @@ public class SignInController {
 
             case INCORRECT_LOGIN:
             case INCORRECT_PASSWORD:
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.forbidden", null, locale)),
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.forbidden", null, locale), null),
                         HttpStatus.FORBIDDEN);
 
             case OK:
                 httpSession.setAttribute("userName", signInView.getUserName());
-                return new ResponseEntity<>(new ResponseCode(true,
-                        messageSource.getMessage("msgs.ok", null, locale)),
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.ok", null, locale), null),
                         HttpStatus.OK);
 
             default:
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.internal_server_error", null, locale)),
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, locale), null),
                         HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

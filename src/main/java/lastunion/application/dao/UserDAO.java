@@ -47,71 +47,6 @@ public class UserDAO {
         );
     }
 
-<<<<<<< HEAD
-    @SuppressWarnings({"InstanceMethodNamingConvention", "RedundantSuppression"})
-    private void appendStringField(StringBuilder builder, String fieldName, String value) {
-        builder.append(fieldName);
-        builder.append('=');
-        builder.append('\'');
-        builder.append(value);
-        builder.append('\'');
-        builder.append(',');
-    }
-
-    @SuppressWarnings({"InstanceMethodNamingConvention", "RedundantSuppression"})
-    private void appendIntegerField(StringBuilder builder, @SuppressWarnings("SameParameterValue") String fieldName,
-                                    Integer value) {
-        builder.append(fieldName);
-        builder.append('=');
-        builder.append(value);
-    }
-
-    public void modifyUser(UserModel user, UserModel changedUser) {
-        final StringBuilder builder = new StringBuilder("UPDATE users set ");
-        appendStringField(builder, "username", changedUser.getUserName());
-        appendStringField(builder, "useremail", changedUser.getUserEmail());
-        appendStringField(builder, "userpassword", changedUser.getUserPasswordHash());
-        appendIntegerField(builder, "userscore", changedUser.getUserHighScore());
-        builder.append(" WHERE ");
-        appendStringField(builder, "username", user.getUserName());
-        builder.deleteCharAt(builder.length() - 1);
-        executeQuery(builder.toString());
-    }
-
-    @SuppressWarnings("StringBufferReplaceableByString")
-    public void saveUser(UserModel user) {
-        final StringBuilder builder = new StringBuilder("INSERT INTO users (username, useremail, userpassword) VALUES(");
-        builder.append('\'');
-        builder.append(user.getUserName());
-        builder.append('\'');
-        builder.append(',');
-        builder.append('\'');
-        builder.append(user.getUserEmail());
-        builder.append('\'');
-        builder.append(',');
-        builder.append('\'');
-        builder.append(user.getUserPasswordHash());
-        builder.append('\'');
-        builder.append(')');
-
-        executeQuery(builder.toString());
-    }
-
-    @SuppressWarnings("StringBufferReplaceableByString")
-    public void deleteUserByName(final String userName) {
-        final StringBuilder builder = new StringBuilder("DELETE FROM users WHERE username = ");
-        builder.append('\'');
-        builder.append(userName);
-        builder.append('\'');
-
-        executeQuery(builder.toString());
-    }
-
-    private void executeQuery(String query) {
-        jdbcTemplate.update(query);
-    }
-
-=======
     public void modifyUser(UserModel user, UserModel changedUser) {
         final String query = "UPDATE users set username=?, useremail=?, userpassword=?, userscore=? WHERE username=?";
         jdbcTemplate.update(query, changedUser.getUserName(),
@@ -130,5 +65,4 @@ public class UserDAO {
         final String query = "DELETE FROM users WHERE username = ?";
         jdbcTemplate.update(query, userName);
     }
->>>>>>> dev
 }
