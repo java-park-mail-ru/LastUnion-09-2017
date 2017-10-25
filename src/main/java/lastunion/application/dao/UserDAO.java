@@ -47,6 +47,7 @@ public class UserDAO {
         );
     }
 
+<<<<<<< HEAD
     @SuppressWarnings({"InstanceMethodNamingConvention", "RedundantSuppression"})
     private void appendStringField(StringBuilder builder, String fieldName, String value) {
         builder.append(fieldName);
@@ -110,4 +111,24 @@ public class UserDAO {
         jdbcTemplate.update(query);
     }
 
+=======
+    public void modifyUser(UserModel user, UserModel changedUser) {
+        final String query = "UPDATE users set username=?, useremail=?, userpassword=?, userscore=? WHERE username=?";
+        jdbcTemplate.update(query, changedUser.getUserName(),
+                changedUser.getUserEmail(),
+                changedUser.getUserPasswordHash(),
+                changedUser.getUserHighScore(),
+                user.getUserName());
+    }
+
+    public void saveUser(UserModel user) {
+        final String query = "INSERT INTO users (username, useremail, userpassword) VALUES(?, ?, ?)";
+        jdbcTemplate.update(query, user.getUserName(), user.getUserEmail(), user.getUserPasswordHash());
+    }
+
+    public void deleteUserByName(final String userName) {
+        final String query = "DELETE FROM users WHERE username = ?";
+        jdbcTemplate.update(query, userName);
+    }
+>>>>>>> dev
 }

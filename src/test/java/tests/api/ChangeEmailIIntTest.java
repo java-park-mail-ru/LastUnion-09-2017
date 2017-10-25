@@ -5,7 +5,10 @@ import lastunion.application.Application;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+<<<<<<< HEAD
 import org.junit.experimental.categories.Category;
+=======
+>>>>>>> dev
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +16,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+<<<<<<< HEAD
+=======
+import org.springframework.transaction.annotation.Transactional;
+>>>>>>> dev
 
 import javax.validation.constraints.NotNull;
 
@@ -24,9 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
+<<<<<<< HEAD
 @Category(tests.IntegrationTest.class)
 //
 
+=======
+@Transactional
+>>>>>>> dev
 public class ChangeEmailIIntTest {
     @Autowired
     private MockMvc mock;
@@ -35,7 +46,10 @@ public class ChangeEmailIIntTest {
     private static String pathUrl;
     private static String userName;
     private static String userEmail;
+<<<<<<< HEAD
     private static String userPassword;
+=======
+>>>>>>> dev
 
 
     @SuppressWarnings("MissortedModifiers")
@@ -61,6 +75,7 @@ public class ChangeEmailIIntTest {
     public void setUp() throws Exception {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
+<<<<<<< HEAD
         userPassword = faker.internet().password();
         pathUrl = "/api/user/change_email";
 
@@ -69,6 +84,12 @@ public class ChangeEmailIIntTest {
         } catch (Exception ex) {
             throw new RuntimeException();
         }
+=======
+        final String userPassword = faker.internet().password();
+        pathUrl = "/api/user/change_email";
+
+        createUser(userName, userPassword, userEmail);
+>>>>>>> dev
     }
 
     @Test

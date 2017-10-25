@@ -1,5 +1,9 @@
 package lastunion.application.views;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.annotation.JsonIgnore;
+>>>>>>> dev
 import lastunion.application.models.UserModel;
 
 import javax.validation.constraints.NotNull;
@@ -47,12 +51,21 @@ public class UserView implements AbstractView {
     }
 
     @Override
+<<<<<<< HEAD
     @SuppressWarnings("OverlyComplexBooleanExpression")
+=======
+    @SuppressWarnings({"OverlyComplexBooleanExpression", "RedundantSuppression"})
+    @JsonIgnore
+>>>>>>> dev
     public final boolean isFilled() {
         return userLogin != null && userEmail != null && userHighScore != null;
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    @JsonIgnore
+>>>>>>> dev
     public final boolean isValid() {
         return true;
     }
