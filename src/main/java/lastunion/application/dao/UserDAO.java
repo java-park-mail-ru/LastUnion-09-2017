@@ -2,10 +2,9 @@ package lastunion.application.dao;
 
 import lastunion.application.models.UserModel;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+
 import javax.validation.constraints.NotNull;
 
-@Repository
 public class UserDAO {
 
     private final JdbcTemplate jdbcTemplate;

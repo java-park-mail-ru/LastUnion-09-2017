@@ -54,8 +54,9 @@ public class ChangeEmailIIntTest {
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         final String userPassword = faker.internet().password();
