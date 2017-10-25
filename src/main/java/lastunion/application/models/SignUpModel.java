@@ -6,7 +6,7 @@ public class SignUpModel {
     private final String userPassword;
     private final String userEmail;
 
-    public SignUpModel(String userName, String userPassword,String userEmail) {
+    public SignUpModel(String userName, String userPassword, String userEmail) {
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;

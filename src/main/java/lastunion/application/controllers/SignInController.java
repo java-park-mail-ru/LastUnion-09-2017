@@ -52,7 +52,7 @@ public class SignInController {
             case INCORRECT_LOGIN:
             case INCORRECT_PASSWORD:
                 return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.forbidden", null,locale), null),
+                        messageSource.getMessage("msgs.forbidden", null, locale), null),
                         HttpStatus.FORBIDDEN);
 
             case OK:

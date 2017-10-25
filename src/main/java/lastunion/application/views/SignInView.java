@@ -1,7 +1,6 @@
 package lastunion.application.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class SignInView implements AbstractView {

@@ -114,7 +114,9 @@ public class UserManager {
     }
 
     public ResponseCode userExists(@Nullable String userName) {
-        if (userName == null) return ResponseCode.INCORRECT_LOGIN;
+        if (userName == null) {
+            return ResponseCode.INCORRECT_LOGIN;
+        }
         try {
             if (!userDAO.userExist(userName)) {
                 return ResponseCode.INCORRECT_LOGIN;
@@ -128,12 +130,14 @@ public class UserManager {
 
     public ResponseCode changeUserPassword(@NotNull final String oldPassword, @NotNull String newPassword, @NotNull final String userName) {
         final ResponseCode checkUserResponseCode = userExists(userName);
-        if (checkUserResponseCode != ResponseCode.OK)
+        if (checkUserResponseCode != ResponseCode.OK) {
             return checkUserResponseCode;
+        }
 
         final ResponseCode checkPasswordResponseCode = checkPasswordByUserName(oldPassword, userName);
-        if (checkPasswordResponseCode != ResponseCode.OK)
+        if (checkPasswordResponseCode != ResponseCode.OK) {
             return checkPasswordResponseCode;
+        }
 
         try {
             final UserModel user = userDAO.getUserByName(userName);

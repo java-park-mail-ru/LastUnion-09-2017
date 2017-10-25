@@ -1,7 +1,5 @@
 package lastunion.application.views;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.Nullable;
 
 public final class ResponseCode<T> {
