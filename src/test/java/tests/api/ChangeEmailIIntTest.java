@@ -5,7 +5,6 @@ import lastunion.application.Application;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(tests.IntegrationTest.class)
 @Transactional
 public class ChangeEmailIIntTest {
     @Autowired
