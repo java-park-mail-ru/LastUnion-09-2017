@@ -153,42 +153,6 @@
 			</plugin>
 
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<!--classpath:db/migration is target/classes/db/migration-->
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/application/resources/</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!--<plugin>-->
-				<!--<groupId>org.flywaydb</groupId>-->
-				<!--<artifactId>flyway-maven-plugin</artifactId>-->
-				<!--<version>4.2.0</version>-->
-				<!--&lt;!&ndash;<configuration>&ndash;&gt;-->
-					<!--&lt;!&ndash;<user>comp</user>&ndash;&gt;-->
-					<!--&lt;!&ndash;<password>951103</password>&ndash;&gt;-->
-					<!--&lt;!&ndash;<url>${spring.datasource.url}</url>&ndash;&gt;-->
-
-				<!--&lt;!&ndash;</configuration>&ndash;&gt;-->
-			<!--</plugin>-->
-
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
