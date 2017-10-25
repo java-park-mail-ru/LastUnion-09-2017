@@ -4,6 +4,7 @@ install: true
 
 env: DB=pgsql
 before_script: psql -c "CREATE USER comp with superuser" -U postgres;
+               psql -c "CREATE DATABASE comp" -u postgres;
                psql -c "CREATE DATABASE lastunion;" -U comp;
 
 script: mvn -q clean integration-test
