@@ -5,7 +5,6 @@ import lastunion.application.Application;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,19 +12,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(tests.IntegrationTest.class)
-//
-
+@Transactional
 public class UserDataIntTest {
     @Autowired
     private MockMvc mock;
@@ -52,19 +49,14 @@ public class UserDataIntTest {
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
-    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
         pathUrl = "/api/user/data";
 
-        try {
-            createUser();
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
+        createUser();
     }
 
     @Test

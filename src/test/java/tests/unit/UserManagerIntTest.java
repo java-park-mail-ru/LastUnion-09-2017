@@ -9,13 +9,13 @@ import lastunion.application.models.UserModel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertSame;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(tests.IntegrationTest.class)
+@Transactional
 public class UserManagerIntTest {
     @Autowired
     private UserManager userManager;
@@ -57,15 +57,15 @@ public class UserManagerIntTest {
 
     @Test
     public void checkPasswordByUserNameOk() {
-        final boolean result = userManager.checkPasswordByUserName(userPassword, userName);
-        assertSame(result, true);
+        final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(userPassword, userName);
+        assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
     @Test
     public void checkPasswordByUserNameWithIncorrectPassword() {
-        final boolean result = userManager.checkPasswordByUserName(faker.internet().password(), userName);
-        assertSame(result, false);
+        final UserManager.ResponseCode responseCode = userManager.checkPasswordByUserName(faker.internet().password(), userName);
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_PASSWORD);
     }
 
     @Test
@@ -113,20 +113,20 @@ public class UserManagerIntTest {
 
     @Test
     public void checkUserThatExist() {
-        final boolean result = userManager.userExists(userName);
-        assertSame(result, true);
+        final UserManager.ResponseCode responseCode = userManager.userExists(userName);
+        assertSame(responseCode, UserManager.ResponseCode.OK);
     }
 
     @Test
-    public void checkNullUser() {
-        final boolean result = userManager.userExists(faker.name().username());
-        assertSame(result, false);
+    public void checkThatNotExist() {
+        final UserManager.ResponseCode responseCode = userManager.userExists(faker.name().username());
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test
-    public void checkUserThatNotExist() {
-        final boolean result = userManager.userExists(null);
-        assertSame(result, false);
+    public void checkUserNull() {
+        final UserManager.ResponseCode responseCode = userManager.userExists(null);
+        assertSame(responseCode, UserManager.ResponseCode.INCORRECT_LOGIN);
     }
 
     @Test

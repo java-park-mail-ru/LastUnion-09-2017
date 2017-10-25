@@ -33,9 +33,6 @@ public final class UserModel {
         this.userPasswordHash = signUpModel.getUserPassword();
     }
 
-    /*
-    Getters and Setters
-     */
 
     @SuppressWarnings("unused")
     public Integer getUserId() {

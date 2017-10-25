@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://front-lastunion.herokuapp.com")
+@CrossOrigin(origins = "${frontend_url}")
 @RestController
 public class SignUpController {
     @NotNull
@@ -28,48 +28,46 @@ public class SignUpController {
     }
 
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode> signUp(@RequestBody SignUpView signUpView, HttpSession httpSession) {
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> signUp(Locale locale, @RequestBody SignUpView signUpView, HttpSession httpSession) {
 
         if (!signUpView.isFilled()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_json", null, Locale.ENGLISH)),
-                HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_json", null, locale), null),
+                    HttpStatus.BAD_REQUEST);
         }
-        // Incorrect reg data
         if (!signUpView.isValid()) {
-            return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request_form", null, Locale.ENGLISH)),
-                HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_form", null, locale), null),
+                    HttpStatus.BAD_REQUEST);
         }
 
         final SignUpModel signUpUser = new SignUpModel(signUpView.getUserName(), signUpView.getUserPassword(),
-            signUpView.getUserEmail());
+                signUpView.getUserEmail());
 
         final UserManager.ResponseCode responseCode = userManager.signUpUser(signUpUser);
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (responseCode) {
             case OK:
-                httpSession.setAttribute("userLogin", signUpView.getUserName());
-                return new ResponseEntity<>(new ResponseCode(true,
-                    messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
-                    HttpStatus.CREATED);
+                httpSession.setAttribute("userName", signUpView.getUserName());
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.created", null, locale), null),
+                        HttpStatus.CREATED);
 
             case LOGIN_IS_TAKEN:
-                return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.conflict_login", null, Locale.ENGLISH)),
-                    HttpStatus.CONFLICT);
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.conflict_login", null, locale), null),
+                        HttpStatus.CONFLICT);
 
             case EMAIL_IS_TAKEN:
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.conflict_email", null, Locale.ENGLISH)),
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.conflict_email", null, locale), null),
                         HttpStatus.CONFLICT);
 
             default:
-                return new ResponseEntity<>(new ResponseCode(false,
-                    messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, locale), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

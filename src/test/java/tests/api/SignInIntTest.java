@@ -13,16 +13,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
+@SuppressWarnings({"UnnecessaryFullyQualifiedName", "RedundantSuppression"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@Category(tests.IntegrationTest.class)
+@Transactional
 public class SignInIntTest {
     @Autowired
     private MockMvc mock;
@@ -53,19 +54,14 @@ public class SignInIntTest {
                 .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
     }
 
-    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
         pathUrl = "/api/user/signin";
 
-        try {
-            createUser();
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
+        createUser();
     }
 
 

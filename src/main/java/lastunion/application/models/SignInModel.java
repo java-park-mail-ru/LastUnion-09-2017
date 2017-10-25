@@ -1,17 +1,14 @@
 package lastunion.application.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SignInModel {
 
     private final String userName;
     private final String userPassword;
 
-    @JsonCreator
-    public SignInModel(@JsonProperty("userName") String name, @JsonProperty("userPassword") String password) {
-        this.userName = name;
-        this.userPassword = password;
+    public SignInModel(String userName, String userPassword) {
+        this.userName = userName;
+        this.userPassword = userPassword;
     }
 
     public String getUserName() {
