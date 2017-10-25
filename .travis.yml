@@ -3,7 +3,7 @@ jdk: oraclejdk8
 install: true
 
 env: DB=pgsql
-before_script: psql -c "CREATE DATABASE lastunion;" -U comp;
+before_script: psql -c "CREATE DATABASE lastunion;" -U postgres;
 
 script: mvn -q clean integration-test
 cache:
