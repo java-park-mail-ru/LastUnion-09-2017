@@ -51,7 +51,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
     @Before
@@ -75,7 +75,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
 
@@ -88,7 +88,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Login already occupied! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Login already occupied!")));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Email already registered!")));
     }
 
 
@@ -116,7 +116,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
 
@@ -141,7 +141,7 @@ public class SignUpIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
 

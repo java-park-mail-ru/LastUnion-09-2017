@@ -52,7 +52,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
     @Before
@@ -75,7 +75,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")));
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")
@@ -89,7 +89,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
     }
 
 
@@ -103,7 +103,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
     }
 
     @Test
@@ -154,7 +154,7 @@ public class ChangePaswordIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
     }
 
     @SuppressWarnings("InstanceMethodNamingConvention")

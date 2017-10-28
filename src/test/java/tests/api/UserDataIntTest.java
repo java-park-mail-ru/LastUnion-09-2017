@@ -31,6 +31,7 @@ public class UserDataIntTest {
     private static String userName;
     private static String userEmail;
     private static String userPassword;
+    private static Integer userScore;
 
     @SuppressWarnings("MissortedModifiers")
     @BeforeClass
@@ -46,7 +47,7 @@ public class UserDataIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
     @Before
@@ -54,6 +55,7 @@ public class UserDataIntTest {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         userPassword = faker.internet().password();
+        userScore = (int)(0 + Math.random()*100);
         pathUrl = "/api/user/data";
 
         createUser();
@@ -67,7 +69,7 @@ public class UserDataIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")));
     }
 
     @Test
@@ -78,7 +80,62 @@ public class UserDataIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
+    }
+
+    @Before
+    public void setUserScoreNormal() throws Exception {
+        mock.perform(
+                get("/api/user/set_score/" + userScore.toString())
+                        .sessionAttr("userName", userName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")));
+    }
+
+    @Test
+    public void setUserScoreIncorrectUserName() throws Exception {
+        mock.perform(
+                get("/api/user/set_score/" + userScore.toString())
+                        .sessionAttr("userName", faker.name().username()))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
+    }
+
+    @Test
+    public void setUserScoreNullUserName() throws Exception {
+        mock.perform(
+                get("/api/user/set_score/" + userScore.toString()))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
+    }
+
+    @Test
+    public void setUserScoreNotInteger() throws Exception {
+        mock.perform(
+                get("/api/user/set_score/hi")
+                        .sessionAttr("userName", userName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.responseMessage", is("Score didn't set or is not an integer!")));
+    }
+
+    @Test
+    public void getScoreUser() throws Exception {
+        mock.perform(
+                get("/api/user/get_score")
+                        .sessionAttr("userName", userName))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")))
+                .andExpect(jsonPath("$.data", is(userScore)));
     }
 
     @Test
@@ -88,7 +145,7 @@ public class UserDataIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
     }
 
 }

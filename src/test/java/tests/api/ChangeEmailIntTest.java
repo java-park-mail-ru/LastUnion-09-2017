@@ -20,12 +20,11 @@ import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SuppressWarnings("UnnecessaryFullyQualifiedName")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @Transactional
-public class ChangeEmailIIntTest {
+public class ChangeEmailIntTest {
     @Autowired
     private MockMvc mock;
     private static Faker faker;
@@ -51,12 +50,11 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
-    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         userName = faker.name().username();
         userEmail = faker.internet().emailAddress();
         final String userPassword = faker.internet().password();
@@ -75,7 +73,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")));
     }
 
     @Test
@@ -88,7 +86,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Form not valid! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Form not valid!")));
     }
 
     @Test
@@ -106,7 +104,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Email already registered! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Email already registered!")));
     }
 
 
@@ -120,7 +118,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -132,7 +130,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
     }
 
     @Test
@@ -145,7 +143,7 @@ public class ChangeEmailIIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid session! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid session!")));
     }
 
     @Test

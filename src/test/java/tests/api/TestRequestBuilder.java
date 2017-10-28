@@ -7,18 +7,18 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class TestRequestBuilder {
+class TestRequestBuilder {
     private final ArrayList<String> jsonKeys;
 
-    public TestRequestBuilder() {
+    TestRequestBuilder() {
         jsonKeys = new ArrayList<>();
     }
 
-    public void init(String... keys) {
+    void init(String... keys) {
         Collections.addAll(jsonKeys, keys);
     }
 
-    public static String getJsonRequestForSignUp(@NotNull String uName, @NotNull String uPassword, @NotNull String uEmail) {
+    static String getJsonRequestForSignUp(@NotNull String uName, @NotNull String uPassword, @NotNull String uEmail) {
         final JSONObject jso = new JSONObject();
         jso.put("userName", uName);
         jso.put("userPassword", uPassword);
@@ -26,7 +26,7 @@ public class TestRequestBuilder {
         return jso.toString();
     }
 
-    public String getJsonRequest(String... values) {
+    String getJsonRequest(String... values) {
         final JSONObject jso = new JSONObject();
 
         if (values == null) {
