@@ -6,4 +6,4 @@ env: DB=pgsql
 before_script: psql -c "CREATE DATABASE lastunion;" -U postgres;
 
 cache:
-  directories: $HOME/.m2
+  directories: $HOME/.m2 
