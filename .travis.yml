@@ -5,6 +5,5 @@ install: true
 env: DB=pgsql
 before_script: psql -c "CREATE DATABASE lastunion;" -U postgres;
 
-script: mvn -q clean integration-test
 cache:
-  directories: $HOME/.m2
+  directories: $HOME/.m2 

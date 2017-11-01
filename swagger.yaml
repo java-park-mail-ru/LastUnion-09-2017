@@ -8,7 +8,6 @@ info:
 # schemes:
 # - https
 
-
 paths:
   /api/user/signin:
     post:

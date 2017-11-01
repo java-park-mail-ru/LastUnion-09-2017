@@ -134,25 +134,6 @@
 			</plugin>
 
 			<plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12</version>
-                <configuration>
-					<includes>
-						<include>**/*IntTest.java</include>
-					</includes>
-                </configuration>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>

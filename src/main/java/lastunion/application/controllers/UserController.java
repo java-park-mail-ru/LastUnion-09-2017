@@ -217,7 +217,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "/api/user/score", method = RequestMethod.GET,
+    @RequestMapping(path = "/api/user/get_score", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getHighScore(Locale locale, HttpSession httpSession) {
         final String userName = (String) httpSession.getAttribute("userName");
@@ -228,7 +228,7 @@ public class UserController {
         }
 
         final UserModel userModel = new UserModel();
-        UserManager.ResponseCode responseCode = userManager.getUserByName(userName, userModel);
+        final UserManager.ResponseCode responseCode = userManager.getUserByName(userName, userModel);
 
         switch (responseCode) {
             case INCORRECT_LOGIN:
@@ -240,6 +240,48 @@ public class UserController {
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, locale),
                         userModel.getUserHighScore()), HttpStatus.OK);
+
+            default:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, locale), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+    }
+
+    @RequestMapping(path = "/api/user/set_score/{score}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
+                                          HttpSession httpSession) {
+
+        final int userScore;
+        try {
+            userScore = new Integer(score);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_score", null, locale), null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        final String userName = (String) httpSession.getAttribute("userName");
+        if (userName == null) {
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.not_found", null, locale), null),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        final UserManager.ResponseCode responseCode = userManager.changeUserHighScore(userName, userScore);
+
+        switch (responseCode) {
+            case INCORRECT_LOGIN:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.forbidden", null, locale), null),
+                        HttpStatus.FORBIDDEN);
+
+            case OK:
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.ok", null, locale),
+                        null), HttpStatus.OK);
 
             default:
                 return new ResponseEntity<>(new ResponseCode<>(false,

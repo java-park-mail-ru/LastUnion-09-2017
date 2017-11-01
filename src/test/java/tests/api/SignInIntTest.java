@@ -5,7 +5,6 @@ import lastunion.application.Application;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -51,7 +50,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("User created successfully! en")));
+                .andExpect(jsonPath("$.responseMessage", is("User created successfully!")));
     }
 
     @Before
@@ -74,7 +73,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", is(true)))
-                .andExpect(jsonPath("$.responseMessage", is("Ok! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Ok!")));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Json contains null fields!")));
     }
 
 
@@ -111,7 +110,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
     }
 
 
@@ -124,7 +123,7 @@ public class SignInIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.result", is(false)))
-                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data! en")));
+                .andExpect(jsonPath("$.responseMessage", is("Invalid authentication data!")));
     }
 
 
