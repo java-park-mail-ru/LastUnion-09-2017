@@ -1,0 +1,9 @@
+language: java
+jdk: oraclejdk8
+install: true
+
+env: DB=pgsql
+before_script: psql -c "CREATE DATABASE lastunion;" -U postgres;
+
+cache:
+  directories: $HOME/.m2 
