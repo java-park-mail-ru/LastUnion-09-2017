@@ -17,10 +17,6 @@ import lastunion.application.game.services.GameService;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 
-/**
- * Created by ksg on 11.04.17.
- */
-
 @SuppressWarnings("DefaultFileTemplate")
 public class GameSocketHandler extends TextWebSocketHandler {
     @SuppressWarnings({"SpringJavaAutowiredMembersInspection", "SpringAutowiredFieldsWarningInspection"})
@@ -32,7 +28,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws AuthenticationException {
-        LOGGER.debug("connection establisher handler");
         gameService.addUser(webSocketSession);
     }
 
@@ -46,7 +41,6 @@ public class GameSocketHandler extends TextWebSocketHandler {
             gameService.removeUser(userId);
         }
         webSocketSession.close();
-        //TODO: sercer closed connection status?
     }
 
     @Override
@@ -54,7 +48,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         final String userId = (String) session.getAttributes().get("userLogin");
         if (userId == null) {
             try {
-                session.sendMessage(new TextMessage(text_msg));
+                session.sendMessage(new TextMessage("MSG"));
             } catch (IOException ignored) {
                 LOGGER.error("IOException", ignored);
             }
