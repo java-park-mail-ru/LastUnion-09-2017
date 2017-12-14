@@ -1,3 +1,4 @@
+/*
 package lastunion.application.game.models;
 
 import lastunion.application.models.UserModel;
@@ -71,3 +72,4 @@ public class GameUserModel {
     }
 }
 
+*/

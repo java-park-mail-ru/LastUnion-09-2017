@@ -1,4 +1,4 @@
-package lastunion.application.game.controllers;
+/*package lastunion.application.game.controllers;
 
 import lastunion.application.game.models.GameUserModel;
 import lastunion.application.managers.UserManager;
@@ -46,3 +46,4 @@ public class GameController {
     }
 
 }
+*/

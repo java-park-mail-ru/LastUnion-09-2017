@@ -10,7 +10,7 @@ import lastunion.application.game.websocket.GameSocketHandler;
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(new Class[]{WebSocketConfig.class, Application.class});
+        SpringApplication.run(new Class[]{WebSocketConfig.class, Application.class}, args);
     }
 
     @Bean
