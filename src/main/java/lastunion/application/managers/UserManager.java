@@ -1,10 +1,12 @@
 package lastunion.application.managers;
 
 
+import com.github.javafaker.Bool;
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
 import lastunion.application.models.UserModel;
+import org.apache.catalina.User;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Service
 public class UserManager {
@@ -173,6 +176,19 @@ public class UserManager {
             userDAO.deleteUserByName(userName);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error DataBase", daEx);
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
+    }
+
+    public ResponseCode getScores(@NotNull Integer limit, Integer offset, Boolean order, List<UserModel> scores) {
+        try {
+            List<UserModel> scores_ = userDAO.getScores(limit, offset, order);
+            for (UserModel model : scores_) {
+                scores.add(model);
+            }
         } catch (DataAccessException daEx) {
             LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
