@@ -256,7 +256,6 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
                                                  HttpSession httpSession) {
-
         final int userScore;
         try {
             userScore = new Integer(score);
