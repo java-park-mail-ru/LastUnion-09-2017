@@ -1,3 +1,4 @@
+
 package lastunion.application.controllers;
 
 import org.springframework.context.MessageSource;
@@ -15,6 +16,8 @@ import lastunion.application.views.EmailView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @CrossOrigin(origins = "${frontend_url}")
@@ -252,8 +255,7 @@ public class UserController {
     @RequestMapping(path = "/api/user/set_score/{score}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> setScore(Locale locale, @PathVariable(value = "score") String score,
-                                          HttpSession httpSession) {
-
+                                                 HttpSession httpSession) {
         final int userScore;
         try {
             userScore = new Integer(score);
@@ -288,6 +290,64 @@ public class UserController {
                         messageSource.getMessage("msgs.internal_server_error", null, locale), null),
                         HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    @RequestMapping(path = "/api/user/get_scores", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> getPosts(Locale locale, @RequestParam(value = "limit", required = false) String limit_,
+                                                 @RequestParam(value = "offset", required = false) String offset_,
+                                                 @RequestParam(value = "order", required = false) String order_
+    ) {
+
+
+        final int limit;
+        try {
+            limit = new Integer(limit_);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_limit", null, locale), null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        final int offset;
+        try {
+            offset = new Integer(offset_);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.bad_request_offset", null, locale), null),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        Boolean order;
+        if (order_ == null)
+            order = false;
+        else {
+            if (order_.equals("desc")) {
+                order = false;
+            } else {
+                if (order_.equals("asc")) {
+                    order = true;
+                } else {
+                    return new ResponseEntity<>(new ResponseCode<>(false,
+                            messageSource.getMessage("msgs.bad_request_order", null, locale), null),
+                            HttpStatus.BAD_REQUEST);
+                }
+            }
+        }
+
+
+        final List<UserModel> scores = new ArrayList<>();
+        final UserManager.ResponseCode responseCode = userManager.getScores(limit, offset, order, scores);
+
+        switch (responseCode) {
+            case OK:
+                return new ResponseEntity<>(new ResponseCode<List<UserModel>>(true,
+                        messageSource.getMessage("msgs.ok", null, locale), scores),
+                        HttpStatus.OK);
+            default:
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, locale), null),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
