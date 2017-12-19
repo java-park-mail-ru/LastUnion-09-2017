@@ -109,7 +109,7 @@ public class GameService {
     }
 
     public void addMessage(WebSocketSession webSocketSession, TextMessage message){
-        String userId = (String) webSocketSession.getAttributes().get("userId");
+        String userId = (String) webSocketSession.getAttributes().get("userName");
         if (userId == null){
             ErrorMessage errorMessage = new ErrorMessage("User error", objectMapper);
             try {
