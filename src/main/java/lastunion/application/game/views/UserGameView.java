@@ -1,4 +1,3 @@
-/*
 package lastunion.application.game.views;
 
 @SuppressWarnings("DefaultFileTemplate")
@@ -18,4 +17,3 @@ public class UserGameView {
         return this.UserName;
     }
 }
-*/

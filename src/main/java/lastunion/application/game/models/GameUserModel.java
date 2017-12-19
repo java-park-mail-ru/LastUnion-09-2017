@@ -1,10 +1,9 @@
-/*
 package lastunion.application.game.models;
 
 import lastunion.application.models.UserModel;
+import lastunion.application.views.UserView;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.socket.WebSocketSession;
-import lastunion.application.models.UserModel;
 import lastunion.application.managers.UserManager;
 import lastunion.application.game.views.UserGameView;
 
@@ -19,13 +18,13 @@ public class GameUserModel {
     }
 
     private final WebSocketSession session;
-    private UserModel userModel;
+    private UserView userView;
     private final UserManager userManager;
 
     public GameUserModel(WebSocketSession session, UserManager userManager) {
         this.userManager = userManager;
         this.session = session;
-        this.userModel = null;
+        this.userView = null;
     }
 
     public ErrorCodes GameUserModelInit(String userId) {
@@ -46,30 +45,29 @@ public class GameUserModel {
                 return ErrorCodes.SERVER_ERROR;
             }
         }
-        this.userModel = userModel;
+        this.userView = userView;
         return ErrorCodes.OK;
     }
 
     public String getUserId() {
-        return userModel.getUserName();
+        return userView.getUserLogin();
     }
 
     public WebSocketSession getSession() {
         return session;
     }
 
-    public UserModel getSignInModel() {
-        return userModel;
+    public UserView getUserModel() {
+        return userView;
     }
 
     @Nullable
     public UserGameView getGameView() {
-        if (userModel == null) {
+        if (userView == null) {
             return null;
         }
-        final String name = userModel.getUserName();
+        final String name = userView.getUserLogin();
         return new UserGameView(name);
     }
 }
 
-*/
