@@ -1,4 +1,3 @@
-
 package lastunion.application.controllers;
 
 import org.springframework.context.MessageSource;

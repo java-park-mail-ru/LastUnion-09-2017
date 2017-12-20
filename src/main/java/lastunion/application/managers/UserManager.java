@@ -1,6 +1,5 @@
 package lastunion.application.managers;
 
-
 import com.github.javafaker.Bool;
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;

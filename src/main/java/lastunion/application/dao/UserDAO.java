@@ -3,9 +3,9 @@ package lastunion.application.dao;
 import lastunion.application.models.UserModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Repository
 public class UserDAO {
@@ -25,7 +25,7 @@ public class UserDAO {
     @SuppressWarnings("unused")
     public UserModel getUserById(final Integer id) {
         final String query = "SELECT * FROM users WHERE id = ?";
-        return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rowNum) ->
+        return jdbcTemplate.queryForObject(query, new Object[] {id}, (rs, rowNum) ->
                 new UserModel(
                         rs.getInt("id"),
                         rs.getString("username"),
@@ -38,7 +38,7 @@ public class UserDAO {
 
     public UserModel getUserByName(final String userName) {
         final String sql = "SELECT * FROM users WHERE username = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{userName}, (rs, rowNum) ->
+        return jdbcTemplate.queryForObject(sql, new Object[] {userName}, (rs, rowNum) ->
                 new UserModel(
                         rs.getInt("id"),
                         rs.getString("username"),

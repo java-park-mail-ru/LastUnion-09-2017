@@ -17,5 +17,4 @@ public class Application {
     public WebSocketHandler gameWebSocketHandler() {
         return new PerConnectionWebSocketHandler(GameSocketHandler.class);
     }
-
 }
