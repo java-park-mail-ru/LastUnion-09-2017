@@ -9,6 +9,8 @@ public class ErrorMessage extends BaseMessage {
         this.error = error;
     }
 
+    public ErrorMessage() { }
+
     @Override
     public String getType() {
         return ErrorMessage.class.getName();

@@ -11,6 +11,8 @@ public class CommandMessage extends BaseMessage {
         this.arguments = arguments;
     }
 
+    public CommandMessage() { }
+
     @Override
     public String getType() {
         return ErrorMessage.class.getName();

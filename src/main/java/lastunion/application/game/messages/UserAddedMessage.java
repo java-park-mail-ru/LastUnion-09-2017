@@ -9,6 +9,8 @@ public class UserAddedMessage extends BaseMessage {
         this.userName = userName;
     }
 
+    public UserAddedMessage() { }
+
     @Override
     public String getType() {
         return UserAddedMessage.class.getName();

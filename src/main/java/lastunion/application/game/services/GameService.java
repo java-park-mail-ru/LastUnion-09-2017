@@ -30,15 +30,15 @@ public class GameService {
     @Autowired
     private UserManager userManager;
     private ObjectMapper objectMapper;
-    private GameTransportService gameTransportService;
+    private static GameTransportService gameTransportService;
     private final Random random = new Random();
 
     static final int LENGTH = 10;
     static final int TYPES = 5;
     static final int DELTA = 256;
 
-    private final Map<String, Integer> userGameControllerId = new ConcurrentHashMap<>();
-    private final Map<Integer, GameTransportService> idGameController = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> USER_GAME_CONTROLLER_ID = new ConcurrentHashMap<>();
+    private static final Map<Integer, GameTransportService> INTEGER_GAME_TRANSPORT_SERVICE_MAP = new ConcurrentHashMap<>();
 
     public GameService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -52,14 +52,14 @@ public class GameService {
     private void startGame() {
         gameTransportService.gameStart();
         int id = gameTransportService.hashCode();
-        while (idGameController.get(id) != null) {
+        while (INTEGER_GAME_TRANSPORT_SERVICE_MAP.get(id) != null) {
             id++;
         }
-        idGameController.put(id, gameTransportService);
+        INTEGER_GAME_TRANSPORT_SERVICE_MAP.put(id, gameTransportService);
         final ArrayList<UserGameView> userList = gameTransportService.getGameView().getList();
         for (UserGameView user: userList) {
             String userId = user.getUserId();
-            userGameControllerId.put(userId, id);
+            USER_GAME_CONTROLLER_ID.put(userId, id);
         }
         resetGame();
     }
@@ -78,7 +78,7 @@ public class GameService {
             default:
                 return ResponseCode.ERROR;
         }
-        if (userGameControllerId.get(userController.getUserId()) != null) {
+        if (USER_GAME_CONTROLLER_ID.get(userController.getUserId()) != null) {
             userController.sendMessageToUser(new ErrorMessage("Error"), objectMapper);
             userController.close();
             return ResponseCode.ERROR;
@@ -100,16 +100,25 @@ public class GameService {
     }
 
     public synchronized ResponseCode removeUser(String userId) {
-        Integer gameControllerId = userGameControllerId.get(userId);
+        Integer gameControllerId = USER_GAME_CONTROLLER_ID.get(userId);
         if (gameControllerId != null) {
-            userGameControllerId.remove(userId);
+            USER_GAME_CONTROLLER_ID.remove(userId);
+        } else {
+            gameTransportService.removeUser(userId);
+            return ResponseCode.OK;
         }
-        GameTransportService game = idGameController.get(gameControllerId);
+        GameTransportService game = INTEGER_GAME_TRANSPORT_SERVICE_MAP.get(gameControllerId);
+        // нужно удалить всех игроков с тем же GameController
+        for (String usid: USER_GAME_CONTROLLER_ID.keySet()) {
+            if (USER_GAME_CONTROLLER_ID.get(usid).intValue() == gameControllerId.intValue()) {
+                USER_GAME_CONTROLLER_ID.remove(usid);
+            }
+        }
         if (game != null) {
             EndGame endGame = new EndGame("user exit");
-            game.sendMessageAll(endGame);
-            game.closeConnections();
-            idGameController.remove(gameControllerId);
+            game.sendWithOut(endGame.to_json(objectMapper), userId);
+            game.closeConnectionsWithOut(userId);
+            INTEGER_GAME_TRANSPORT_SERVICE_MAP.remove(gameControllerId);
         }
         return ResponseCode.OK;
     }
@@ -137,22 +146,25 @@ public class GameService {
             }
             return;
         }
-        Integer gameControllerId = userGameControllerId.get(userId);
-        GameTransportService game = idGameController.get(gameControllerId);
-        if (game == null) {
-            return;
-        }
-        if (commandMessage.getCommand().equals("Sequence")) {
-            CommandMessage command = new CommandMessage("NewSequence", genWorldSeq());
-            game.sendMessageAll(command);
-        } else if (commandMessage.getCommand().equals("Ready")) {
-            game.setStatus(userId, true);
-            if (game.checkStatus()) {
-                CommandMessage command = new CommandMessage("Start", genWorldSeq());
-                game.sendMessageAll(command);
+        Integer gameControllerId = USER_GAME_CONTROLLER_ID.get(userId);
+
+        if (gameControllerId != null) {
+            GameTransportService game = INTEGER_GAME_TRANSPORT_SERVICE_MAP.get(gameControllerId);
+            if (game == null) {
+                return;
             }
-        } else if (commandMessage.getCommand().equals("SetPosition")) {
-            game.sendWithOut(commandMessage, userId);
+            if (commandMessage.getCommand().equals("Sequence")) {
+                CommandMessage command = new CommandMessage("NewSequence", genWorldSeq());
+                game.sendMessageAll(command);
+            } else if (commandMessage.getCommand().equals("Ready")) {
+                game.setStatus(userId, true);
+                if (game.checkStatus()) {
+                    CommandMessage command = new CommandMessage("Start", genWorldSeq());
+                    game.sendMessageAll(command);
+                }
+            } else if (commandMessage.getCommand().equals("SetPosition")) {
+                game.sendWithOut(commandMessage.to_json(objectMapper), userId);
+            }
         }
     }
 

@@ -5,6 +5,8 @@ public class UserExitedMessage extends BaseMessage {
 
     private String userName;
 
+    public UserExitedMessage() { }
+
     public UserExitedMessage(String userName) {
         this.userName = userName;
     }

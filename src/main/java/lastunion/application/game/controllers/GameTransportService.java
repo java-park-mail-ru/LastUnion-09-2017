@@ -72,11 +72,14 @@ public class GameTransportService {
     }
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
-    public ErrorCodes closeConnections() {
+    public ErrorCodes closeConnectionsWithOut(String userId) {
         for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
             final GameUserController user = entry.getValue();
-            user.close();
+            if (!user.getUserId().equals(userId)) {
+                user.close();
+            }
         }
+
         return ErrorCodes.OK;
     }
 
@@ -107,7 +110,7 @@ public class GameTransportService {
     public ErrorCodes sendWithOut(String msg, String userId) {
         for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
             final GameUserController user = entry.getValue();
-            if (user.getUserId().equals(userId)) {
+            if (!user.getUserId().equals(userId)) {
                 final GameUserController.ErrorCodes err = user.sendMessageToUser(msg);
                 switch (err) {
                     case OK:
@@ -122,23 +125,6 @@ public class GameTransportService {
         return ErrorCodes.OK;
     }
 
-    public ErrorCodes sendWithOut(BaseMessage msg, String userId) {
-        for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
-            final GameUserController user = entry.getValue();
-            if (user.getUserId().equals(userId)) {
-                final GameUserController.ErrorCodes err = user.sendMessageToUser(msg, mapper);
-                switch (err) {
-                    case OK:
-                        break;
-
-                    default:
-                        return ErrorCodes.ERROR;
-
-                }
-            }
-        }
-        return ErrorCodes.OK;
-    }
 
     @SuppressWarnings("UnusedReturnValue")
     public ErrorCodes gameStart() {

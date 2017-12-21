@@ -9,6 +9,8 @@ public class EndGame extends BaseMessage {
         this.status = status;
     }
 
+    public EndGame() { }
+
     @Override
     public String getType() {
         return BaseMessage.class.getName();
