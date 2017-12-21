@@ -1,16 +1,17 @@
 package lastunion.application.game.views;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Vector;
+
+import java.util.ArrayList;
 
 public class GameView {
-    private final Vector<UserGameView> list;
+    private final ArrayList<UserGameView> list;
 
-    public GameView(ObjectMapper mapper, Vector<UserGameView> list) {
+    public GameView(ObjectMapper mapper, ArrayList<UserGameView> list) {
         this.list = list;
     }
 
-    public Vector<UserGameView> getList() {
+    public ArrayList<UserGameView> getList() {
         return list;
     }
 }

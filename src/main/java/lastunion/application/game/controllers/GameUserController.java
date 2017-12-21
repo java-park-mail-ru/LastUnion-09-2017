@@ -21,7 +21,7 @@ public class GameUserController {
     private GameUserModel gameUserModel;
 
     public ErrorCodes gameUserControllerInit(WebSocketSession webSocketSession, UserManager userManager) {
-        final String userId = (String) webSocketSession.getAttributes().get("userLogin");
+        final String userId = (String) webSocketSession.getAttributes().get("userName");
         gameUserModel = new GameUserModel(webSocketSession, userManager);
         if (userId == null) {
             return ErrorCodes.ERROR;

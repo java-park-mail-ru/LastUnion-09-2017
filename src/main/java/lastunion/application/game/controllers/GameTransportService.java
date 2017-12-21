@@ -10,11 +10,11 @@ import lastunion.application.game.views.UserGameView;
 import lastunion.application.models.UserModel;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameController {
+public class GameTransportService {
     public enum ErrorCodes {
         ERROR,
         READY_START,
@@ -22,11 +22,13 @@ public class GameController {
     }
 
     private final Map<String, GameUserController> users;
+    private final Map<String, Boolean> usersReady;
     private final ObjectMapper mapper;
 
-    public GameController(ObjectMapper mapper) {
+    public GameTransportService(ObjectMapper mapper) {
         this.mapper = mapper;
         this.users = new ConcurrentHashMap<>();
+        this.usersReady = new ConcurrentHashMap<>();
     }
 
     public synchronized ErrorCodes addUser(@NotNull GameUserController user) {
@@ -43,6 +45,19 @@ public class GameController {
         }
         sendMessageAll(new UserAddedMessage(user.getUserDataView().getUserName()));
         return ErrorCodes.OK;
+    }
+
+    public void setStatus(@NotNull String userId, Boolean status) {
+        usersReady.put(userId, status);
+    }
+
+    public boolean checkStatus() {
+        for (String userId : users.keySet()) {
+            if (!usersReady.get(userId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public ErrorCodes removeUser(@NotNull String userId) {
@@ -107,13 +122,31 @@ public class GameController {
         return ErrorCodes.OK;
     }
 
+    public ErrorCodes sendWithOut(BaseMessage msg, String userId) {
+        for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
+            final GameUserController user = entry.getValue();
+            if (user.getUserId().equals(userId)) {
+                final GameUserController.ErrorCodes err = user.sendMessageToUser(msg, mapper);
+                switch (err) {
+                    case OK:
+                        break;
+
+                    default:
+                        return ErrorCodes.ERROR;
+
+                }
+            }
+        }
+        return ErrorCodes.OK;
+    }
+
     @SuppressWarnings("UnusedReturnValue")
     public ErrorCodes gameStart() {
         return sendMessageAll(new GameReadyMessage());
     }
 
     public GameView getGameView() {
-        final Vector<UserGameView> userList = new Vector<>();
+        final ArrayList<UserGameView> userList = new ArrayList<>();
         for (GameUserController tab : users.values()) {
             final UserGameView view = tab.getGameView();
             userList.add(view);

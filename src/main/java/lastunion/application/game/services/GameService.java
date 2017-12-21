@@ -2,6 +2,7 @@ package lastunion.application.game.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lastunion.application.game.controllers.GameUserController;
+import lastunion.application.game.messages.CommandMessage;
 import lastunion.application.game.messages.EndGame;
 import lastunion.application.game.messages.ErrorMessage;
 import lastunion.application.game.views.UserGameView;
@@ -10,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import lastunion.application.game.controllers.GameController;
+import lastunion.application.game.controllers.GameTransportService;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("DefaultFileTemplate")
@@ -28,10 +30,15 @@ public class GameService {
     @Autowired
     private UserManager userManager;
     private ObjectMapper objectMapper;
-    private GameController gameController;
+    private GameTransportService gameTransportService;
+    private final Random random = new Random();
 
-    private static final Map<String, Integer> USER_GAME_CONTROLLER_ID = new ConcurrentHashMap<>();
-    private static final Map<Integer, GameController> ID_GAME_CONTROLLER = new ConcurrentHashMap<>();
+    static final int LENGTH = 10;
+    static final int TYPES = 5;
+    static final int DELTA = 256;
+
+    private final Map<String, Integer> userGameControllerId = new ConcurrentHashMap<>();
+    private final Map<Integer, GameTransportService> idGameController = new ConcurrentHashMap<>();
 
     public GameService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -39,26 +46,26 @@ public class GameService {
     }
 
     private void createGame() {
-        gameController = new GameController(objectMapper);
+        gameTransportService = new GameTransportService(objectMapper);
     }
 
     private void startGame() {
-        gameController.gameStart();
-        int id = gameController.hashCode();
-        while (ID_GAME_CONTROLLER.get(id) != null) {
+        gameTransportService.gameStart();
+        int id = gameTransportService.hashCode();
+        while (idGameController.get(id) != null) {
             id++;
         }
-        ID_GAME_CONTROLLER.put(id, gameController);
-        final Vector<UserGameView> userList = gameController.getGameView().getList();
+        idGameController.put(id, gameTransportService);
+        final ArrayList<UserGameView> userList = gameTransportService.getGameView().getList();
         for (UserGameView user: userList) {
             String userId = user.getUserId();
-            USER_GAME_CONTROLLER_ID.put(userId, id);
+            userGameControllerId.put(userId, id);
         }
         resetGame();
     }
 
     private void resetGame() {
-        gameController = new GameController(objectMapper);
+        gameTransportService = new GameTransportService(objectMapper);
     }
 
     public synchronized ResponseCode addUser(WebSocketSession userSession) {
@@ -71,12 +78,12 @@ public class GameService {
             default:
                 return ResponseCode.ERROR;
         }
-        if (USER_GAME_CONTROLLER_ID.get(userController.getUserId()) != null) {
+        if (userGameControllerId.get(userController.getUserId()) != null) {
             userController.sendMessageToUser(new ErrorMessage("Error"), objectMapper);
             userController.close();
             return ResponseCode.ERROR;
         }
-        GameController.ErrorCodes errorController = gameController.addUser(userController);
+        GameTransportService.ErrorCodes errorController = gameTransportService.addUser(userController);
         switch (errorController) {
             case OK:
                 break;
@@ -93,21 +100,33 @@ public class GameService {
     }
 
     public synchronized ResponseCode removeUser(String userId) {
-        Integer gameControllerId = USER_GAME_CONTROLLER_ID.get(userId);
+        Integer gameControllerId = userGameControllerId.get(userId);
         if (gameControllerId != null) {
-            USER_GAME_CONTROLLER_ID.remove(userId);
+            userGameControllerId.remove(userId);
         }
-        GameController game = ID_GAME_CONTROLLER.get(gameControllerId);
+        GameTransportService game = idGameController.get(gameControllerId);
         if (game != null) {
             EndGame endGame = new EndGame("user exit");
             game.sendMessageAll(endGame);
             game.closeConnections();
-            ID_GAME_CONTROLLER.remove(gameControllerId);
+            idGameController.remove(gameControllerId);
         }
         return ResponseCode.OK;
     }
 
     public void addMessage(WebSocketSession webSocketSession, TextMessage message) {
+        CommandMessage commandMessage;
+        try {
+            commandMessage = objectMapper.readValue(message.getPayload(), CommandMessage.class);
+        } catch (IOException exception) {
+            ErrorMessage errorMessage = new ErrorMessage("Not valid message");
+            try {
+                webSocketSession.sendMessage(new TextMessage(errorMessage.to_json(objectMapper)));
+            } catch (IOException ex) {
+                return;
+            }
+            return;
+        }
         String userId = (String) webSocketSession.getAttributes().get("userName");
         if (userId == null) {
             ErrorMessage errorMessage = new ErrorMessage("User error");
@@ -118,10 +137,36 @@ public class GameService {
             }
             return;
         }
-        Integer gameControllerId = USER_GAME_CONTROLLER_ID.get(userId);
-        GameController game = ID_GAME_CONTROLLER.get(gameControllerId);
-        if (game != null) {
-            game.sendWithOut(message.getPayload(), userId);
+        Integer gameControllerId = userGameControllerId.get(userId);
+        GameTransportService game = idGameController.get(gameControllerId);
+        if (game == null) {
+            return;
         }
+        if (commandMessage.getCommand().equals("Sequence")) {
+            CommandMessage command = new CommandMessage("NewSequence", genWorldSeq());
+            game.sendMessageAll(command);
+        } else if (commandMessage.getCommand().equals("Ready")) {
+            game.setStatus(userId, true);
+            if (game.checkStatus()) {
+                CommandMessage command = new CommandMessage("Start", genWorldSeq());
+                game.sendMessageAll(command);
+            }
+        } else if (commandMessage.getCommand().equals("SetPosition")) {
+            game.sendWithOut(commandMessage, userId);
+        }
+    }
+
+    private String genWorldSeq() {
+        int len = random.nextInt(LENGTH) + LENGTH; // length of sequence from 9 to 18
+        String res = "";
+        byte nextType = 0;
+        byte delta = 0;
+        for (int i = len; i >= 0; i--) {
+            nextType = (byte) random.nextInt(TYPES); // types 0 - 4
+            res = res + nextType;
+            delta = (byte) random.nextInt(DELTA); // delta 0-255
+            res = res + (char) delta;
+        }
+        return res;
     }
 }
