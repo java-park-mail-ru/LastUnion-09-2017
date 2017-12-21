@@ -1,11 +1,11 @@
 package lastunion.application.game.messages;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class UserAddedMessage extends BaseMessage{
-    String userName;
-    public UserAddedMessage(String userName, ObjectMapper mapper){
-        super(mapper);
+public class UserAddedMessage extends BaseMessage {
+
+    private String userName;
+
+    public UserAddedMessage(String userName) {
         this.userName = userName;
     }
 

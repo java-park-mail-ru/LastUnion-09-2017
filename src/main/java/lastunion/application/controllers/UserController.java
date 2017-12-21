@@ -293,39 +293,20 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/get_scores", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode> getPosts(Locale locale, @RequestParam(value = "limit", required = false) String limit_,
-                                                 @RequestParam(value = "offset", required = false) String offset_,
-                                                 @RequestParam(value = "order", required = false) String order_
+    public ResponseEntity<ResponseCode> getPosts(Locale locale, @RequestParam(value = "limit", required = false) Integer limit,
+                                                 @RequestParam(value = "offset", required = false) Integer offset,
+                                                 @RequestParam(value = "order", required = false) String order
     ) {
 
-
-        final int limit;
-        try {
-            limit = new Integer(limit_);
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_limit", null, locale), null),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        final int offset;
-        try {
-            offset = new Integer(offset_);
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.bad_request_offset", null, locale), null),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        Boolean order;
-        if (order_ == null)
-            order = false;
-        else {
-            if (order_.equals("desc")) {
-                order = false;
+        Boolean booleanOrder;
+        if (order == null) {
+            booleanOrder = false;
+        } else {
+            if (order.equals("desc")) {
+                booleanOrder = false;
             } else {
-                if (order_.equals("asc")) {
-                    order = true;
+                if (order.equals("asc")) {
+                    booleanOrder = true;
                 } else {
                     return new ResponseEntity<>(new ResponseCode<>(false,
                             messageSource.getMessage("msgs.bad_request_order", null, locale), null),
@@ -336,7 +317,7 @@ public class UserController {
 
 
         final List<UserModel> scores = new ArrayList<>();
-        final UserManager.ResponseCode responseCode = userManager.getScores(limit, offset, order, scores);
+        final UserManager.ResponseCode responseCode = userManager.getScores(limit, offset, booleanOrder, scores);
 
         switch (responseCode) {
             case OK:

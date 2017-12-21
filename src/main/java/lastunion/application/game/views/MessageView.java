@@ -5,17 +5,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.jetbrains.annotations.NotNull;
 
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageView {
+
     @JsonProperty("messageType")
     private String messageType;
+
     @JsonProperty("content")
     private String content;
-    public MessageView(@NotNull String messageType, @NotNull String content){
+
+    public MessageView(@NotNull String messageType, @NotNull String content) {
         this.messageType = messageType;
         this.content = content;
     }
-    public MessageView(){}
+
+    public MessageView() { }
+
     public String getContent() {
         return content;
     }
@@ -25,7 +30,7 @@ public class MessageView {
     }
 
     @Override
-    public String toString(){
-        return "{\""+ messageType +"\":\""+ content +"\"}";
+    public String toString() {
+        return "{\"" + messageType + "\":\"" + content + "\"}";
     }
 }

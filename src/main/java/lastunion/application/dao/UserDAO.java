@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import javax.validation.constraints.NotNull;
+
 
 @Repository
 public class UserDAO {
@@ -60,16 +60,16 @@ public class UserDAO {
 
     public List<UserModel> getScores(Integer limit, Integer offset, Boolean desc) {
         StringBuilder query = new StringBuilder("SELECT * FROM users ORDER BY userscore ");
-        if (desc == Boolean.TRUE)
+        if (desc == Boolean.TRUE) {
             query.append("DESC ");
-        else
+        } else {
             query.append("ASC ");
-
+        }
         query.append("LIMIT ? ");
         query.append("OFFSET ?");
         return jdbcTemplate.query(query.toString(), new Object[]{limit, offset}, (rs, rowNum) ->
                 new UserModel(
-                        null,//rs.getInt("id"),
+                        null,
                         rs.getString("username"),
                         null,
                         null,

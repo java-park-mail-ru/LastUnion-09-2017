@@ -1,11 +1,11 @@
 package lastunion.application.game.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lastunion.application.game.messages.BaseMessage;
 import lastunion.application.game.models.GameUserModel;
 import lastunion.application.game.views.UserGameView;
 import lastunion.application.managers.UserManager;
 import lastunion.application.models.UserModel;
-import lastunion.application.views.UserView;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,14 +26,14 @@ public class GameUserController {
         if (userId == null) {
             return ErrorCodes.ERROR;
         }
-        final GameUserModel.ErrorCodes result = gameUserModel.GameUserModelInit(userId);
+        final GameUserModel.ErrorCodes result = gameUserModel.modelInit(userId);
         switch (result) {
-            case OK: {
+            case OK:
                 break;
-            }
-            default: {
+
+            default:
                 return ErrorCodes.ERROR;
-            }
+
         }
         return ErrorCodes.OK;
     }
@@ -63,8 +63,8 @@ public class GameUserController {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public ErrorCodes sendMessageToUser(BaseMessage message) {
-        final String result = message.to_json();
+    public ErrorCodes sendMessageToUser(BaseMessage message, ObjectMapper objectMapper) {
+        final String result = message.to_json(objectMapper);
         if (result == null) {
             return ErrorCodes.ERROR;
         }
@@ -72,11 +72,11 @@ public class GameUserController {
     }
 
     @Nullable
-    public UserView getUserDataView() {
+    public UserModel getUserDataView() {
         if (gameUserModel == null) {
             return null;
         }
-        final UserView info = gameUserModel.getUserModel();
+        final UserModel info = gameUserModel.getUserModel();
         return info;
     }
 
@@ -95,7 +95,7 @@ public class GameUserController {
             try {
                 webSocketSession.close();
             } catch (IOException ignored) {
-
+                return;
             }
         }
     }

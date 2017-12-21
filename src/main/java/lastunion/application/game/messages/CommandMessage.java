@@ -1,15 +1,12 @@
 package lastunion.application.game.messages;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CommandMessage extends BaseMessage{
+public class CommandMessage extends BaseMessage {
+
     private String command;
     private String arguments;
 
-    public CommandMessage(String command, String arguments, ObjectMapper objectMapper)
-    {
-        super(objectMapper);
+    public CommandMessage(String command, String arguments) {
         this.command = command;
         this.arguments = arguments;
     }
@@ -18,10 +15,12 @@ public class CommandMessage extends BaseMessage{
     public String getType() {
         return ErrorMessage.class.getName();
     }
-    public String getCommand(){
+
+    public String getCommand() {
         return command;
     }
-    public String getArguments(){
+
+    public String getArguments() {
         return arguments;
     }
 }

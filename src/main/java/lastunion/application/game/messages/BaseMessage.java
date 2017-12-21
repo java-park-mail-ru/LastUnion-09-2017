@@ -7,12 +7,8 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class BaseMessage {
-    @JsonIgnore
-    private final ObjectMapper objectMapper;
 
-    protected BaseMessage(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    protected BaseMessage() { }
 
     @SuppressWarnings("unused")
     public String getType() {
@@ -21,12 +17,12 @@ public class BaseMessage {
 
     @Nullable
     @JsonIgnore
-    public String to_json() {
+    public String to_json(ObjectMapper objectMapper) {
         String result = null;
         try {
             result = objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException ignored) {
-
+            return null;
         }
         return result;
     }

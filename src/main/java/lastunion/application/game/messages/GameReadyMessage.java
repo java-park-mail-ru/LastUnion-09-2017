@@ -1,13 +1,12 @@
 package lastunion.application.game.messages;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GameReadyMessage extends BaseMessage{
-    public GameReadyMessage(ObjectMapper objectMapper){
-        super(objectMapper);
-    }
+public class GameReadyMessage extends BaseMessage {
+
+    public GameReadyMessage() { }
+
     @Override
-    public String getType(){
+    public String getType() {
         return GameReadyMessage.class.getName();
     }
 }

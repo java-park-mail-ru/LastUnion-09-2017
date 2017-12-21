@@ -7,7 +7,7 @@ import lastunion.application.game.messages.UserAddedMessage;
 import lastunion.application.game.messages.UserExitedMessage;
 import lastunion.application.game.views.GameView;
 import lastunion.application.game.views.UserGameView;
-import lastunion.application.views.UserView;
+import lastunion.application.models.UserModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -15,11 +15,12 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameController {
-    public enum ErrorCodes{
+    public enum ErrorCodes {
         ERROR,
         READY_START,
         OK,
     }
+
     private final Map<String, GameUserController> users;
     private final ObjectMapper mapper;
 
@@ -40,7 +41,7 @@ public class GameController {
         if (users.size() == 2) {
             return ErrorCodes.READY_START;
         }
-        sendMessageAll(new UserAddedMessage(user.getUserDataView().getUserLogin(), mapper));
+        sendMessageAll(new UserAddedMessage(user.getUserDataView().getUserName()));
         return ErrorCodes.OK;
     }
 
@@ -50,9 +51,9 @@ public class GameController {
         }
         final GameUserController user = users.get(userId);
         users.remove(userId);
-        final UserView userModel = user.getUserDataView();
+        final UserModel userModel = user.getUserDataView();
         user.close();
-        return sendMessageAll(new UserExitedMessage(userModel.getUserLogin(), mapper));
+        return sendMessageAll(new UserExitedMessage(userModel.getUserName()));
     }
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
@@ -69,56 +70,46 @@ public class GameController {
             final GameUserController user = entry.getValue();
             final GameUserController.ErrorCodes err = user.sendMessageToUser(msg);
             switch (err) {
-                case OK: {
+                case OK:
                     break;
-                }
-                default: {
-                    return ErrorCodes.ERROR;
-                }
-            }
-        }
-        return ErrorCodes.OK;
-    }
 
-    //Всем короме себя
-    public ErrorCodes sendWithOut(String msg, String userId) {
-        for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
-            final GameUserController user = entry.getValue();
-            if(user.getUserId()!=userId) {
-                final GameUserController.ErrorCodes err = user.sendMessageToUser(msg);
-                switch (err) {
-                    case OK: {
-                        break;
-                    }
-                    default: {
-                        return ErrorCodes.ERROR;
-                    }
-                }
+                default:
+                    return ErrorCodes.ERROR;
+
             }
         }
         return ErrorCodes.OK;
     }
 
     public ErrorCodes sendMessageAll(BaseMessage baseMessage) {
-        final String result = baseMessage.to_json();
+        final String result = baseMessage.to_json(mapper);
         if (result == null) {
             return ErrorCodes.ERROR;
         }
         return sendMessageAll(result);
     }
-/*
-    public GameView getView() {
-        final Vector<UserView> result = new Vector<>();
-        for (GameUserController tab : users.values()) {
-            final UserView dat = tab.getUserDataView();
-            result.add(dat);
+
+    public ErrorCodes sendWithOut(String msg, String userId) {
+        for (Map.Entry<String, GameUserController> entry : users.entrySet()) {
+            final GameUserController user = entry.getValue();
+            if (user.getUserId().equals(userId)) {
+                final GameUserController.ErrorCodes err = user.sendMessageToUser(msg);
+                switch (err) {
+                    case OK:
+                        break;
+
+                    default:
+                        return ErrorCodes.ERROR;
+
+                }
+            }
         }
-        return new GameView(mapper, result);
-    }*/
+        return ErrorCodes.OK;
+    }
 
     @SuppressWarnings("UnusedReturnValue")
     public ErrorCodes gameStart() {
-        return sendMessageAll(new GameReadyMessage(mapper));
+        return sendMessageAll(new GameReadyMessage());
     }
 
     public GameView getGameView() {
@@ -129,6 +120,4 @@ public class GameController {
         }
         return new GameView(mapper, userList);
     }
-
-
 }

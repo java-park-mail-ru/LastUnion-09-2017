@@ -1,11 +1,10 @@
 package lastunion.application.managers;
 
-import com.github.javafaker.Bool;
+
 import lastunion.application.dao.UserDAO;
 import lastunion.application.models.SignInModel;
 import lastunion.application.models.SignUpModel;
 import lastunion.application.models.UserModel;
-import org.apache.catalina.User;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -184,8 +183,8 @@ public class UserManager {
 
     public ResponseCode getScores(@NotNull Integer limit, Integer offset, Boolean order, List<UserModel> scores) {
         try {
-            List<UserModel> scores_ = userDAO.getScores(limit, offset, order);
-            for (UserModel model : scores_) {
+            List<UserModel> scoresList = userDAO.getScores(limit, offset, order);
+            for (UserModel model : scoresList) {
                 scores.add(model);
             }
         } catch (DataAccessException daEx) {

@@ -1,14 +1,11 @@
 package lastunion.application.game.messages;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class EndGame extends BaseMessage{
+public class EndGame extends BaseMessage {
 
-    String status;
+    private String status;
 
-    public EndGame(String status, ObjectMapper objectMapper)
-    {
-        super(objectMapper);
+    public EndGame(String status) {
         this.status = status;
     }
 
