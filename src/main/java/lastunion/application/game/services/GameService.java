@@ -50,7 +50,8 @@ public class GameService {
     }
 
     private void startGame() {
-        gameTransportService.gameStart();
+//        gameTransportService.gameStart();
+
         int id = gameTransportService.hashCode();
         while (INTEGER_GAME_TRANSPORT_SERVICE_MAP.get(id) != null) {
             id++;
@@ -74,7 +75,6 @@ public class GameService {
         switch (errorUser) {
             case OK:
                 break;
-
             default:
                 return ResponseCode.ERROR;
         }
@@ -161,10 +161,14 @@ public class GameService {
                 if (game.checkStatus()) {
                     CommandMessage command = new CommandMessage("Start", genWorldSeq());
                     game.sendMessageAll(command);
+                    game.gameStart();
                 }
-            } else if (commandMessage.getCommand().equals("SetPosition")) {
-                game.sendWithOut(commandMessage.to_json(objectMapper), userId);
+            } else if (commandMessage.getCommand().equals("Do")) {
+                game.addMessage(commandMessage, userId);
             }
+            //else if (commandMessage.getCommand().equals("SetPosition")) {
+            //  game.sendWithOut(commandMessage.to_json(objectMapper), userId);
+            //}
         }
     }
 
