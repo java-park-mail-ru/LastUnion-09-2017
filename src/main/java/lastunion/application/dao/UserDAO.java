@@ -4,6 +4,8 @@ import lastunion.application.models.UserModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 
 @Repository
 public class UserDAO {
@@ -16,7 +18,7 @@ public class UserDAO {
 
     public boolean userExist(@NotNull String userName) {
         final String query = "SELECT COUNT(*) FROM USERS WHERE username=?";
-        final int count = jdbcTemplate.queryForObject(query, new Object[] {userName}, Integer.class);
+        final int count = jdbcTemplate.queryForObject(query, new Object[]{userName}, Integer.class);
         return count != 0;
     }
 
@@ -54,6 +56,25 @@ public class UserDAO {
                 changedUser.getUserPasswordHash(),
                 changedUser.getUserHighScore(),
                 user.getUserName());
+    }
+
+    public List<UserModel> getScores(Integer limit, Integer offset, Boolean desc) {
+        StringBuilder query = new StringBuilder("SELECT * FROM users ORDER BY userscore ");
+        if (desc == Boolean.TRUE) {
+            query.append("DESC ");
+        } else {
+            query.append("ASC ");
+        }
+        query.append("LIMIT ? ");
+        query.append("OFFSET ?");
+        return jdbcTemplate.query(query.toString(), new Object[]{limit, offset}, (rs, rowNum) ->
+                new UserModel(
+                        null,
+                        rs.getString("username"),
+                        null,
+                        null,
+                        rs.getInt("userscore")
+                ));
     }
 
     public void saveUser(UserModel user) {

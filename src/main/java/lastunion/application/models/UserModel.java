@@ -1,13 +1,21 @@
 package lastunion.application.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public final class UserModel {
+    @JsonIgnore
     private Integer userId;
     private String userName;
+    @JsonIgnore
     private String userEmail;
+    @JsonIgnore
     private String userPasswordHash;
     private Integer userHighScore;
+    @JsonIgnore
+    private Integer userCurrentScore;
 
     public UserModel() {
+        userCurrentScore = 0;
     }
 
     public UserModel(Integer userId, String userName, String userEmail,
@@ -17,6 +25,8 @@ public final class UserModel {
         this.userEmail = userEmail;
         this.userPasswordHash = userPasswordHash;
         this.userHighScore = userHighScore;
+        userCurrentScore = 0;
+
     }
 
     public UserModel(UserModel other) {
@@ -25,6 +35,7 @@ public final class UserModel {
         this.userEmail = other.userEmail;
         this.userPasswordHash = other.userPasswordHash;
         this.userHighScore = other.userHighScore;
+        this.userCurrentScore = other.userCurrentScore;
     }
 
     public UserModel(SignUpModel signUpModel) {
@@ -32,6 +43,7 @@ public final class UserModel {
         this.userEmail = signUpModel.getUserEmail();
         this.userPasswordHash = signUpModel.getUserPassword();
     }
+
 
 
     @SuppressWarnings("unused")

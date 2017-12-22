@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Service
 public class UserManager {
@@ -173,6 +174,19 @@ public class UserManager {
             userDAO.deleteUserByName(userName);
         } catch (EmptyResultDataAccessException ex) {
             return ResponseCode.INCORRECT_LOGIN;
+        } catch (DataAccessException daEx) {
+            LOGGER.error("Error DataBase", daEx);
+            return ResponseCode.DATABASE_ERROR;
+        }
+        return ResponseCode.OK;
+    }
+
+    public ResponseCode getScores(@NotNull Integer limit, Integer offset, Boolean order, List<UserModel> scores) {
+        try {
+            List<UserModel> scoresList = userDAO.getScores(limit, offset, order);
+            for (UserModel model : scoresList) {
+                scores.add(model);
+            }
         } catch (DataAccessException daEx) {
             LOGGER.error("Error DataBase", daEx);
             return ResponseCode.DATABASE_ERROR;
