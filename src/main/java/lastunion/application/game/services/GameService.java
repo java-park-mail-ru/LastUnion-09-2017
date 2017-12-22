@@ -153,13 +153,14 @@ public class GameService {
             if (game == null) {
                 return;
             }
-            if (commandMessage.getCommand().equals("Sequence")) {
-                CommandMessage command = new CommandMessage("NewSequence", genWorldSeq());
-                game.sendMessageAll(command);
-            } else if (commandMessage.getCommand().equals("Ready")) {
+//            if (commandMessage.getCommand().equals("Sequence")) {
+//                CommandMessage command = new CommandMessage("NewSequence", genWorldSeq());
+//                game.sendMessageAll(command);
+//            } else
+            if (commandMessage.getCommand().equals("Ready")) {
                 game.setStatus(userId, true);
                 if (game.checkStatus()) {
-                    CommandMessage command = new CommandMessage("Start", genWorldSeq());
+                    CommandMessage command = new CommandMessage("Start","");//, genWorldSeq());
                     game.sendMessageAll(command);
                     game.gameStart();
                 }

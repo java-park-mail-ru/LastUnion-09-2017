@@ -122,7 +122,11 @@ public class GameTransportService implements Runnable {
 
     public boolean checkStatus() {
         for (String userId : users.keySet()) {
-            if (!usersReady.get(userId)) {
+            try {
+                if (!usersReady.get(userId)) {
+                    return false;
+                }
+            } catch(NullPointerException ex) {
                 return false;
             }
         }
