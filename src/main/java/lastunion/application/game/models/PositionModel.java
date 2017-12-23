@@ -5,12 +5,20 @@ public class PositionModel {
     Point bottomLeft;
     Point upRight;
     Boolean stand;
+    Double jumpTime;
+    Double jumpLambda;
+    Integer acceleration;
+    Integer jumpPower;
+    Integer height;
 
-    public PositionModel() {}
+    public PositionModel() {
+        this.init();
+    }
 
     public PositionModel(String userId, Boolean stand) {
         this.userId = userId;
         this.stand = stand;
+        this.init();
     }
 
     public PositionModel(String userId, Point bottomLeft, Point center, Point upRight, Integer x, Integer y, Boolean stand) {
@@ -18,6 +26,15 @@ public class PositionModel {
         this.bottomLeft = bottomLeft;
         this.upRight = upRight;
         this.stand = stand;
+        this.height = Math.abs(upRight.getY() - bottomLeft.getY());
+        this.init();
+    }
+
+    public void init() {
+        this.jumpTime = 0.0;
+        this.jumpLambda = 0.0;
+        this.acceleration = 10;
+        this.jumpPower = 33;
     }
 
     public Point getBottomLeft() {
@@ -55,5 +72,23 @@ public class PositionModel {
 
     public void setUpRight(Point upRight) {
         this.upRight = upRight;
+    }
+
+    public void jump() {
+        if(jumpTime == 0) {
+            jumpLambda = 0.0;
+        }
+
+        jumpLambda = jumpPower * jumpTime - (acceleration * Math.pow(jumpTime, 2) / 2) - jumpLambda;
+        jumpTime += 0.8;
+
+        if(getMidBottom().getY() + jumpLambda < 0) {
+            bottomLeft.setY(0);
+            upRight.setY(height);
+            jumpTime = 0.0;
+            return;
+        }
+        bottomLeft.setY(bottomLeft.getY() + jumpLambda.intValue());
+        upRight.setY(upRight.getY() + jumpLambda.intValue());
     }
 }
