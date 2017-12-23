@@ -9,24 +9,27 @@ import org.jetbrains.annotations.Nullable;
 import lastunion.application.game.models.PositionModel;
 import lastunion.application.game.models.ScoreModel;
 
-// Its maybe not work
-public class UpperObstacle extends BaseWorldObject {
-	private final Integer Y = 295;
+
+
+
+
+public class MidObstacle extends BaseWorldObject {
+	protected Integer x;
+	private final Integer Y = 405;
 	private final Integer WIDTH = 50;
 	private final Integer HEIGHT = 100;
-	protected Integer x;
+    protected MidObstacle(Integer x) { this.x = x; }
 
-    protected UpperObstacle(Integer x) { this.x = x; }
     // check if collision commited (returns true) and performs
-
     public boolean Collission(PositionModel positionModel, ScoreModel scoreModel, GameSettings gameSettings) {
-    	Point playerMidTop = new Point((positionModel.getBottomLeft().getX() + positionModel.getUpRight().getX())/2,
-											positionModel.getUpRight().getY()
+    	Point playerMidBottom = new Point((positionModel.getBottomLeft().getX() + positionModel.getUpRight().getX())/2,
+											positionModel.getBottomLeft().getY()
 										 );
 
-		Point spikeCenterBottom = new Point(this.x+WIDTH/2, Y + HEIGHT - WIDTH/2);
+		Point spikeCenterBottom = new Point(this.getX()+WIDTH/2, Y + WIDTH/2);
 		
-		double dist = GetDistance(playerMidTop, spikeCenterBottom);
+		double dist = GetDistance(playerMidBottom, spikeCenterBottom);
+
 
 		//check fatal collision with spikes
 		if ((dist < WIDTH/2)) {
@@ -34,9 +37,11 @@ public class UpperObstacle extends BaseWorldObject {
 			return true;
 		}
 
-		Point playerRightTop = positionModel.getUpRight();
-		if (this.x <= playerRightTop.getX() && playerRightTop.getX() <= this.x+WIDTH && playerRightTop.getY() < Y+HEIGHT-WIDTH/2) {
-			positionModel.changeX(-gameSettings.horSpeed);
+		// check non-Fatal collision with wall
+		if ((this.x <= positionModel.getUpRight().getX()) && (positionModel.getUpRight().getX() <= this.x+WIDTH) &&
+				(positionModel.getBottomLeft().getY() > Y+WIDTH/2)) {
+			positionModel.changeX(-gameSettings.horSpeed); //setter nujen
+			
 			return true;
 		}
 
@@ -44,8 +49,8 @@ public class UpperObstacle extends BaseWorldObject {
     }
 
 //    private double GetDistance(Point a, Point b) {
-//    	double dx = a.getX() - b.getX();
-//		double dy = a.getY() - b.getY();
+//    	ddx = a.getX() - b.getX();
+//		float dy = a.getY() - b.getY();
 //
 //		return Math.sqrt(dx*dx + dy*dy);
 //	}
