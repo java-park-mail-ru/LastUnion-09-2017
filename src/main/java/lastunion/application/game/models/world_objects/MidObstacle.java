@@ -18,7 +18,7 @@ public class MidObstacle extends BaseWorldObject {
 	private final Integer Y = 405;
 	private final Integer WIDTH = 50;
 	private final Integer HEIGHT = 100;
-    protected MidObstacle(Integer x) { this.x = x; }
+    public MidObstacle(Integer x) { this.x = x; }
 
     // check if collision commited (returns true) and performs
     public boolean Collission(PositionModel positionModel, ScoreModel scoreModel, GameSettings gameSettings) {

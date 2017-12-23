@@ -13,7 +13,7 @@ public class PositionModel {
         this.stand = stand;
     }
 
-    public PositionModel(String userId, Point bottomLeft, Point center, Point upRight, Integer x, Integer y, Boolean stand) {
+    public PositionModel(String userId, Point bottomLeft, Point upRight, Integer x, Integer y, Boolean stand) {
         this.userId = userId;
         this.bottomLeft = bottomLeft;
         this.upRight = upRight;
