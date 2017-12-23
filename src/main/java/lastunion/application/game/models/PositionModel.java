@@ -46,7 +46,7 @@ public class PositionModel {
     }
 
     public void bend() {
-        upRight.setY(upRight.getY() / 2);
+        bottomLeft.setY((upRight.getY() - bottomLeft.getY()) / 2);
     }
 
     public void setUpRight(Point upRight) {
