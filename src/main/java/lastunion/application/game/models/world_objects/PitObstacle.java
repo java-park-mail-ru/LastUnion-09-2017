@@ -16,7 +16,7 @@ public class PitObstacle extends BaseWorldObject {
 	final private Integer WIDTH = 100;
 	final private Integer HEIGHT = 100;
 
-    protected PitObstacle(Integer x) { this.x = x; }
+    public PitObstacle(Integer x) { this.x = x; }
 
     // check if collision commited (returns true) and performs
     public boolean Collission(PositionModel positionModel, ScoreModel scoreModel, GameSettings gameSettings) {

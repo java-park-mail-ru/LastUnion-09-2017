@@ -16,7 +16,7 @@ public class UpperObstacle extends BaseWorldObject {
 	private final Integer HEIGHT = 100;
 	protected Integer x;
 
-    protected UpperObstacle(Integer x) { this.x = x; }
+    public UpperObstacle(Integer x) { this.x = x; }
     // check if collision commited (returns true) and performs
 
     public boolean Collission(PositionModel positionModel, ScoreModel scoreModel, GameSettings gameSettings) {
