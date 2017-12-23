@@ -1,6 +1,6 @@
 # Lastunion
 Игра в жанре раннер
-***
+
 [Сайт где можно поиграть](https://lastunion.ml)
 ## Состав команды LastUnion:
 1) <a href="https://github.com/HaseProgram" style="font-style: italic;">Дмитрий Зайцев</a> АПО 21
@@ -15,11 +15,11 @@
 
 ## Использемые технологии
 Java version 1.8
-***
+
 Spring boot 1.5.9
-***
+
 JavaScript
-***
+
 Nginx
 
 ## Документация
