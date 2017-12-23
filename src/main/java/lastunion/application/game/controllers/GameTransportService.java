@@ -5,6 +5,8 @@ import lastunion.application.game.messages.*;
 import lastunion.application.game.views.GameView;
 import lastunion.application.game.views.UserGameView;
 import lastunion.application.models.UserModel;
+import lastunion.application.game.models.PositionModel;
+import lastunion.application.game.models.Point;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -64,23 +66,57 @@ public class GameTransportService implements Runnable {
         return res;
     }
 
-    public void gameProcess() {
+    public void gameProcess(PositionModel Player1, PositionModel Player2) {
         UserCommand userCommand = msgQueue.poll();
+        Player1.jump();
+        Player2.jump();
+
         if (userCommand != null) {
             String cmd = userCommand.msg.getArguments();
-            if (cmd.equals("Up")) {
-//                this.wait(1000);
-
-            }
-            else {
-
+            if(userCommand.userId.equals(Player1.getUserId())) {
+                if (cmd.equals("cj")) {
+                    Player1.initJump();
+                }
+                if (cmd.equals("cl")) {
+                    Player1.finishJump();
+                }
+                if (cmd.equals("cd")) {
+                    Player1.bend();
+                }
+            } else {
+                if (cmd.equals("cj")) {
+                    Player2.initJump();
+                }
+                if (cmd.equals("cl")) {
+                    Player2.finishJump();
+                }
+                if (cmd.equals("cr")) {
+                    Player1.standUp();
+                }
             }
         }
+
+        PositionMessage msg = new PositionMessage(Player1, Player2);
+
+        try {
+            sendMessageAll(mapper.writeValueAsString(msg));
+            Thread.sleep(1000);
+        } catch(Exception ex) {
+
+        }
+
+
     }
 
     public void run() {
+        Point bl1 = new Point(-50, 0);
+        Point tr1 = new Point(50, 100);
+        Point bl2 = new Point(-50, 0);
+        Point tr2 = new Point(50, 100);
+        PositionModel Player1 = new PositionModel((String)users.keySet().toArray()[0],bl1, tr1);
+        PositionModel Player2 = new PositionModel((String)users.keySet().toArray()[1],bl2, tr2);
         while (!stopGame) {
-            gameProcess();
+            gameProcess(Player1, Player2);
         }
     }
 
@@ -141,6 +177,7 @@ public class GameTransportService implements Runnable {
         users.remove(userId);
         final UserModel userModel = user.getUserDataView();
         user.close();
+        stop();
         return sendMessageAll(new UserExitedMessage(userModel.getUserName()));
     }
 

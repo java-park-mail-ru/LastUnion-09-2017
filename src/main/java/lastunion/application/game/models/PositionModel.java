@@ -1,15 +1,33 @@
 package lastunion.application.game.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class PositionModel {
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     String userId;
     Point bottomLeft;
     Point upRight;
+    @JsonIgnore
     Boolean stand;
+    @JsonIgnore
     Double jumpTime;
+    @JsonIgnore
     Double jumpLambda;
+    @JsonIgnore
     Integer acceleration;
+    @JsonIgnore
     Integer jumpPower;
+    @JsonIgnore
     Integer height;
+    @JsonIgnore
+    Boolean needJump;
 
     public PositionModel() {
         this.init();
@@ -21,11 +39,10 @@ public class PositionModel {
         this.init();
     }
 
-    public PositionModel(String userId, Point bottomLeft, Point upRight, Integer x, Integer y, Boolean stand) {
+    public PositionModel(String userId, Point bottomLeft, Point upRight) {
         this.userId = userId;
         this.bottomLeft = bottomLeft;
         this.upRight = upRight;
-        this.stand = stand;
         this.height = Math.abs(upRight.getY() - bottomLeft.getY());
         this.init();
     }
@@ -35,6 +52,7 @@ public class PositionModel {
         this.jumpLambda = 0.0;
         this.acceleration = 10;
         this.jumpPower = 33;
+        this.needJump = false;
     }
 
     public Point getBottomLeft() {
@@ -74,21 +92,31 @@ public class PositionModel {
         this.upRight = upRight;
     }
 
+    public void initJump() {
+        needJump = true;
+    }
+
+    public void finishJump() {
+        needJump = false;
+    }
+
     public void jump() {
-        if(jumpTime == 0) {
-            jumpLambda = 0.0;
-        }
+        if(needJump) {
+            if(jumpTime == 0) {
+                jumpLambda = 0.0;
+            }
 
-        jumpLambda = jumpPower * jumpTime - (acceleration * Math.pow(jumpTime, 2) / 2) - jumpLambda;
-        jumpTime += 0.8;
+            jumpLambda = jumpPower * jumpTime - (acceleration * Math.pow(jumpTime, 2) / 2) - jumpLambda;
+            jumpTime += 0.8;
 
-        if(getMidBottom().getY() + jumpLambda < 0) {
-            bottomLeft.setY(0);
-            upRight.setY(height);
-            jumpTime = 0.0;
-            return;
+            if(getMidBottom().getY() + jumpLambda < 0) {
+                bottomLeft.setY(0);
+                upRight.setY(height);
+                jumpTime = 0.0;
+                return;
+            }
+            bottomLeft.setY(bottomLeft.getY() + jumpLambda.intValue());
+            upRight.setY(upRight.getY() + jumpLambda.intValue());
         }
-        bottomLeft.setY(bottomLeft.getY() + jumpLambda.intValue());
-        upRight.setY(upRight.getY() + jumpLambda.intValue());
     }
 }
